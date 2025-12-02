@@ -1,61 +1,102 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# ========================================
+# 微信小程序项目 - Git 忽略文件
+# ========================================
 
-# 虚拟环境
-venv/
-ENV/
-env/
-.venv
+# -------------------- 微信小程序 --------------------
+# npm 构建产物（每次构建会重新生成）
+miniprogram_npm/
 
-# IDE
+# 私有配置文件（包含个人设置和 AppID）
+project.private.config.json
+
+# 开发工具生成的临时文件
 .idea/
 .vscode/
+
+# -------------------- 项目备份 --------------------
+# 备份文件夹（不需要版本控制）
+backup/
+
+# -------------------- AI 辅助工具 --------------------
+# Claude Code 工作文件（个人上下文、操作日志）
+.claude/
+
+# 规范工作流文件
+.spec-workflow/
+
+# -------------------- 操作系统 --------------------
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS 缩略图
+._*
+
+# Windows 系统文件
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# Linux 系统文件
+*~
+
+# -------------------- 编辑器临时文件 --------------------
+# Vim
 *.swp
 *.swo
 *~
 
-# 操作系统
-.DS_Store
-Thumbs.db
+# Emacs
+*~
+\#*\#
+.emacs.desktop
+.emacs.desktop.lock
 
-# 日志文件
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# -------------------- Node.js --------------------
+# 依赖包（如果项目使用 npm/yarn）
+node_modules/
+
+# npm 日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# 包管理器锁文件（根据团队约定决定是否提交）
+# package-lock.json
+# yarn.lock
+
+# -------------------- 日志文件 --------------------
 *.log
+logs/
 
-# 环境变量
+# -------------------- 环境变量 --------------------
 .env
 .env.local
+.env.*.local
 
-# 测试覆盖率
-htmlcov/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
+# -------------------- 临时文件 --------------------
+*.tmp
+*.temp
+*.cache
 
-# Claude 工作文件（保留目录结构，但忽略临时文件）
-.claude/*.tmp
-/.idea/*
-/data/raw/*/*.*
-/data/output/*.*
-/data/processed/*/*.*
+# -------------------- 测试覆盖率 --------------------
+coverage/
+.nyc_output/
+
+# -------------------- 构建产物 --------------------
+dist/
+build/
+
+# -------------------- 其他 --------------------
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
