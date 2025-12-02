@@ -1,0 +1,45 @@
+<view class="profile-page">
+  <!-- 用户信息区域 -->
+  <view class="user-info">
+    <view class="user-avatar">
+      <t-icon name="user" size="120rpx" color="#ffffff" />
+    </view>
+    <view class="user-name">摩托车车主</view>
+    <view class="vehicle-info-text">{{vehicleInfo.model || '未设置车辆'}}</view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <t-cell-group>
+      <!-- 数据管理 -->
+      <t-cell
+        title="导入数据"
+        leftIcon="upload"
+        hover
+        bind:click="onImportData"
+      />
+      <t-cell
+        title="导出数据"
+        leftIcon="download"
+        hover
+        bind:click="onExportData"
+      />
+
+      <!-- 车辆管理 -->
+      <t-cell
+        title="车辆信息"
+        leftIcon="laptop"
+        hover
+        bind:click="onVehicleInfo"
+      />
+
+      <!-- 设置 -->
+      <t-cell
+        title="关于我们"
+        leftIcon="info-circle"
+        hover
+        bind:click="onAbout"
+      />
+    </t-cell-group>
+  </view>
+</view>

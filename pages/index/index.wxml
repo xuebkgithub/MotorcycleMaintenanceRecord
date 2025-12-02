@@ -1,0 +1,104 @@
+<view class="home-page">
+  <!-- 顶部横幅 -->
+  <view class="home-banner">
+    <view class="banner-overlay"></view>
+    <view class="banner-content">
+      <view class="vehicle-model">{{vehicleInfo.model}}</view>
+      <view class="vehicle-mileage">总里程：{{vehicleInfo.mileage}}km</view>
+    </view>
+  </view>
+
+  <!-- 统计宫格 -->
+  <view class="stats-grid">
+    <t-grid column="{{2}}" border="{{false}}">
+      <t-grid-item>
+        <stat-card
+          label="上次维护"
+          value="{{stats.lastMaintenance}}"
+          icon="tools"
+        />
+      </t-grid-item>
+
+      <t-grid-item>
+        <stat-card
+          label="总费用"
+          value="{{stats.totalCost}}"
+          unit="元"
+          icon="money-circle"
+        />
+      </t-grid-item>
+
+      <t-grid-item>
+        <stat-card
+          label="近期油耗"
+          value="{{stats.recentFuelConsumption}}"
+          unit="L/100km"
+          icon="chart-bubble"
+        />
+      </t-grid-item>
+
+      <t-grid-item>
+        <stat-card
+          label="平均油耗"
+          value="{{stats.averageFuelConsumption}}"
+          unit="L/100km"
+          icon="chart-line"
+        />
+      </t-grid-item>
+    </t-grid>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="records-section">
+    <t-tabs
+      defaultValue="{{0}}"
+      bind:change="onTabChange"
+    >
+      <!-- 维护记录 -->
+      <t-tab-panel label="维护记录" value="0">
+        <view class="records-list">
+          <maintenance-item
+            wx:for="{{maintenanceRecords}}"
+            wx:key="id"
+            record="{{item}}"
+            bind:itemtap="onMaintenanceItemTap"
+          />
+
+          <view class="empty-state" wx:if="{{maintenanceRecords.length === 0}}">
+            <text>暂无维护记录</text>
+          </view>
+
+          <view class="view-more" wx:if="{{maintenanceRecords.length > 0}}" bindtap="viewMoreMaintenance">
+            <text>查看更多</text>
+          </view>
+        </view>
+      </t-tab-panel>
+
+      <!-- 加油记录 -->
+      <t-tab-panel label="加油记录" value="1">
+        <view class="records-list">
+          <fuel-item
+            wx:for="{{fuelRecords}}"
+            wx:key="id"
+            record="{{item}}"
+            bind:itemtap="onFuelItemTap"
+          />
+
+          <view class="empty-state" wx:if="{{fuelRecords.length === 0}}">
+            <text>暂无加油记录</text>
+          </view>
+
+          <view class="view-more" wx:if="{{fuelRecords.length > 0}}" bindtap="viewMoreFuel">
+            <text>查看更多</text>
+          </view>
+        </view>
+      </t-tab-panel>
+    </t-tabs>
+  </view>
+
+  <!-- 车辆切换悬浮按钮 -->
+  <t-fab
+    icon="swap"
+    bind:click="onSwitchVehicle"
+  />
+</view>

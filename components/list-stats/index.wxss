@@ -1,0 +1,35 @@
+/* 列表统计头部组件样式 */
+
+.list-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 32rpx 24rpx;
+  background: var(--td-bg-color-container);
+  margin-bottom: 16rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 44rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 8rpx;
+}
+
+.stat-unit {
+  font-size: 24rpx;
+  font-weight: 400;
+  margin-left: 4rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: var(--td-text-color-secondary);
+}

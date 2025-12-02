@@ -1,0 +1,48 @@
+<view class="vehicle-edit-page">
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <t-cell-group>
+      <!-- 车辆名称 -->
+      <t-cell title="车辆名称" required>
+        <t-input
+          slot="note"
+          value="{{formData.name}}"
+          placeholder="请输入车辆名称"
+          maxlength="20"
+          data-field="name"
+          bind:change="onInputChange"
+        />
+      </t-cell>
+
+      <!-- 车型 -->
+      <t-cell title="车型">
+        <t-input
+          slot="note"
+          value="{{formData.model}}"
+          placeholder="请输入车型"
+          maxlength="30"
+          data-field="model"
+          bind:change="onInputChange"
+        />
+      </t-cell>
+
+      <!-- 备注 -->
+      <t-cell title="备注" align="top">
+        <t-textarea
+          slot="note"
+          value="{{formData.note}}"
+          placeholder="请输入备注信息"
+          maxlength="100"
+          data-field="note"
+          bind:change="onInputChange"
+        />
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 按钮区域 -->
+  <view class="button-section">
+    <t-button theme="light" size="large" bind:tap="onCancel">取消</t-button>
+    <t-button theme="primary" size="large" bind:tap="onSave">保存</t-button>
+  </view>
+</view>

@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "保养记录",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-picker": "tdesign-miniprogram/picker/picker",
+    "t-date-time-picker": "tdesign-miniprogram/date-time-picker/date-time-picker",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-checkbox-group": "tdesign-miniprogram/checkbox-group/checkbox-group",
+    "t-checkbox": "tdesign-miniprogram/checkbox/checkbox",
+    "t-textarea": "tdesign-miniprogram/textarea/textarea",
+    "t-button": "tdesign-miniprogram/button/button"
+  }
+}

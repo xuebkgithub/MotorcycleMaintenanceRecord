@@ -1,0 +1,137 @@
+/* 油耗记录新增/编辑页面样式 */
+
+.fuel-add-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--td-bg-color-page);
+}
+
+/* 滚动容器 */
+.form-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 表单容器 */
+.form-container {
+  padding: 32rpx;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--td-text-color-primary);
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+}
+
+.form-label.required::before {
+  content: '*';
+  color: var(--td-error-color-6);
+  margin-right: 8rpx;
+}
+
+/* Picker 包装器 */
+.picker-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  background-color: var(--td-bg-color-container);
+  border-radius: 8rpx;
+  border: 2rpx solid var(--td-component-border);
+  cursor: pointer;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: var(--td-text-color-primary);
+  flex: 1;
+}
+
+.picker-text.placeholder {
+  color: var(--td-text-color-placeholder);
+}
+
+.picker-arrow {
+  font-size: 40rpx;
+  color: var(--td-text-color-placeholder);
+  font-weight: 300;
+  transform: rotate(0deg);
+}
+
+/* 三列表单行 */
+.form-row.three-columns {
+  display: flex;
+  gap: 16rpx;
+}
+
+.form-row.three-columns .form-item {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-item.third {
+  flex: 1;
+}
+
+/* 错误提示 */
+.error-tip {
+  display: block;
+  font-size: 24rpx;
+  color: var(--td-error-color-6);
+  margin-top: 8rpx;
+}
+
+.error-tip.error-standalone {
+  margin-top: -16rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 底部占位 */
+.bottom-placeholder {
+  height: 160rpx;
+}
+
+/* 底部操作按钮 */
+.form-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background-color: var(--td-bg-color-page);
+  border-top: 2rpx solid var(--td-component-border);
+  z-index: 100;
+}
+
+.form-footer t-button {
+  flex: 1;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .fuel-add-page {
+    background-color: var(--td-bg-color-page);
+  }
+
+  .picker-wrapper {
+    background-color: var(--td-bg-color-container);
+    border-color: var(--td-component-border);
+  }
+
+  .form-footer {
+    background-color: var(--td-bg-color-page);
+    border-top-color: var(--td-component-border);
+  }
+}

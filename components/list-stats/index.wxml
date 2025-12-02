@@ -1,0 +1,8 @@
+<view class="list-stats">
+  <view class="stat-item" wx:for="{{stats}}" wx:key="label">
+    <view class="stat-value" style="color: {{item.color || 'var(--td-text-color-primary)'}}">
+      {{item.value}}<text class="stat-unit" wx:if="{{item.unit}}">{{item.unit}}</text>
+    </view>
+    <view class="stat-label">{{item.label}}</view>
+  </view>
+</view>

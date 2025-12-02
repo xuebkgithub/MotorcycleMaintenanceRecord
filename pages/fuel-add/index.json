@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "油耗记录",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-picker": "tdesign-miniprogram/picker/picker",
+    "t-date-time-picker": "tdesign-miniprogram/date-time-picker/date-time-picker",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-button": "tdesign-miniprogram/button/button",
+    "green-radio-group": "/components/green-radio-group/index"
+  }
+}

@@ -1,0 +1,73 @@
+<view class="fuel-detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 未找到记录 -->
+  <view class="not-found-state" wx:elif="{{notFound}}">
+    <text class="not-found-text">记录不存在</text>
+    <t-button theme="primary" size="medium" bind:tap="onBackToList" style="margin-top: 32rpx;">
+      返回列表
+    </t-button>
+  </view>
+
+  <!-- 详情内容 -->
+  <view class="detail-content" wx:else>
+    <!-- 头部信息 -->
+    <view class="detail-header">
+      <view class="header-volume">
+        <text class="volume-number">{{record.volume}}</text>
+        <text class="volume-unit">L</text>
+      </view>
+      <view class="header-cost">¥{{record.cost}}</view>
+    </view>
+
+    <!-- 基本信息 -->
+    <t-cell-group title="基本信息">
+      <t-cell title="日期" note="{{record.date}}" />
+      <t-cell title="里程" note="{{record.mileage}}km" />
+      <t-cell title="加油量" note="{{record.volume}}L" />
+      <t-cell title="费用" note="¥{{record.cost}}" />
+    </t-cell-group>
+
+    <!-- 油耗信息 -->
+    <t-cell-group title="油耗数据">
+      <t-cell title="油耗" note="{{record.fuelConsumption}}L/100km" />
+      <t-cell
+        title="单价"
+        note="¥{{unitPrice}}/L"
+        wx:if="{{record.volume > 0}}"
+      />
+    </t-cell-group>
+
+    <!-- 备注信息 -->
+    <t-cell-group title="备注" wx:if="{{record.note}}">
+      <t-cell title="" note="{{record.note}}" />
+    </t-cell-group>
+
+    <!-- 底部按钮栏 -->
+    <view class="detail-footer">
+      <t-button theme="light" size="large" bind:tap="onBackToList">
+        返回
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="onEdit">
+        编辑
+      </t-button>
+      <t-button theme="default" size="large" bind:tap="onDelete">
+        删除
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 删除确认对话框 -->
+  <t-dialog
+    visible="{{showDeleteDialog}}"
+    title="确认删除"
+    content="删除后无法恢复，确定要删除这条加油记录吗？"
+    confirm-btn="删除"
+    cancel-btn="取消"
+    bind:confirm="onConfirmDelete"
+    bind:cancel="onCancelDelete"
+  />
+</view>

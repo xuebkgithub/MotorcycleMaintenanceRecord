@@ -1,0 +1,82 @@
+{
+  "darkmode": true,
+  "pages": [
+    "pages/index/index",
+    "pages/maintenance-list/index",
+    "pages/fuel-list/index",
+    "pages/profile/index",
+    "pages/vehicle-select/index",
+    "pages/vehicle-manage/index",
+    "pages/vehicle-edit/index",
+    "pages/maintenance-detail/index",
+    "pages/fuel-detail/index",
+    "pages/maintenance-add/index",
+    "pages/fuel-add/index"
+  ],
+  "themeLocation": "theme.json",
+  "usingComponents": {
+    "t-demo": "./components/demo-block/index",
+    "t-demo-header": "./components/demo-header/index",
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-grid": "tdesign-miniprogram/grid/grid",
+    "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
+    "t-tabs": "tdesign-miniprogram/tabs/tabs",
+    "t-tab-panel": "tdesign-miniprogram/tab-panel/tab-panel",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-image": "tdesign-miniprogram/image/image"
+  },
+  "window": {
+    "navigationBarTitleText": "TDesign",
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "@navTxtStyle"
+  },
+  "tabBar": {
+    "color": "#8a8a8a",
+    "selectedColor": "#0052d9",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/maintenance-list/index",
+        "text": "保养列表",
+        "iconPath": "assets/tabbar/maintenance.png",
+        "selectedIconPath": "assets/tabbar/maintenance-active.png"
+      },
+      {
+        "pagePath": "pages/fuel-list/index",
+        "text": "油耗列表",
+        "iconPath": "assets/tabbar/fuel.png",
+        "selectedIconPath": "assets/tabbar/fuel-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile.png",
+        "selectedIconPath": "assets/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "resolveAlias": {
+    "@behaviors/*": "behaviors/*"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "rendererOptions": {
+    "skyline": {
+      "disableABTest": true,
+      "defaultDisplayBlock": true,
+      "defaultContentBox": true,
+      "sdkVersionBegin": "3.4.3",
+      "sdkVersionEnd": "15.255.255"
+    }
+  }
+}

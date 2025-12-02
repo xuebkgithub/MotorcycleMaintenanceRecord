@@ -1,0 +1,14 @@
+<view class="fuel-item" bindtap="onTap">
+  <view class="fuel-item__header">
+    <view class="fuel-item__volume">{{record.volume}}L</view>
+    <view class="fuel-item__cost">¥{{record.cost}}</view>
+  </view>
+  <view class="fuel-item__meta">
+    <text class="meta-item">{{record.date}}</text>
+    <text class="meta-divider">·</text>
+    <text class="meta-item">{{record.mileage}}km</text>
+  </view>
+  <view class="fuel-item__consumption">
+    油耗：{{record.fuelConsumption}}L/100km
+  </view>
+</view>

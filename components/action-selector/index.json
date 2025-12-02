@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "t-dialog": "tdesign-miniprogram/dialog/dialog",
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

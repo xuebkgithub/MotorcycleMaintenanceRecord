@@ -1,0 +1,74 @@
+/* 保养列表页样式 */
+
+.maintenance-list-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--td-bg-color-page);
+}
+
+/* 统计头部顶部间距 */
+.maintenance-list-page list-stats {
+  margin-top: 200rpx;
+}
+
+/* 记录滚动容器 */
+.records-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.records-container {
+  padding: 0 0 32rpx;
+}
+
+/* 加载更多提示 */
+.load-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32rpx 0;
+}
+
+.load-more-text {
+  font-size: 24rpx;
+  color: var(--td-text-color-placeholder);
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: var(--td-text-color-placeholder);
+}
+
+/* SwipeCell 删除按钮 */
+.btn-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: var(--td-error-color-6);
+  color: #ffffff;
+}
+
+/* FAB 悬浮按钮 */
+t-fab {
+  position: fixed;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  right: 32rpx;
+  z-index: 99;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .maintenance-list-page {
+    background-color: var(--td-bg-color-page);
+  }
+}

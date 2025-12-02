@@ -1,0 +1,120 @@
+<!-- 保养记录新增/编辑页面 -->
+<view class="maintenance-add-page">
+  <!-- 导航栏 -->
+  <t-navbar title="{{isEditMode ? '编辑保养记录' : '新增保养记录'}}" />
+
+  <scroll-view scroll-y class="form-scroll">
+    <view class="form-container">
+      <!-- 保养类型 -->
+      <view class="form-item">
+        <view class="form-label required">保养类型</view>
+        <view class="picker-wrapper" bind:tap="onTypePickerShow">
+          <text class="picker-text {{formData.type ? '' : 'placeholder'}}">
+            {{formData.type || '请选择保养类型'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+        <text wx:if="{{errors.type}}" class="error-tip">{{errors.type}}</text>
+      </view>
+
+      <!-- 保养日期 -->
+      <view class="form-item">
+        <view class="form-label required">保养日期</view>
+        <view class="picker-wrapper" bind:tap="onDatePickerShow">
+          <text class="picker-text {{formData.date ? '' : 'placeholder'}}">
+            {{formData.date || '请选择保养日期'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+        <text wx:if="{{errors.date}}" class="error-tip">{{errors.date}}</text>
+      </view>
+
+      <!-- 里程 + 费用（双列）-->
+      <view class="form-row two-columns">
+        <view class="form-item half">
+          <view class="form-label required">里程（km）</view>
+          <t-input
+            type="number"
+            value="{{formData.mileage}}"
+            placeholder="请输入里程"
+            bind:change="onMileageInput"
+          />
+          <text wx:if="{{errors.mileage}}" class="error-tip">{{errors.mileage}}</text>
+        </view>
+
+        <view class="form-item half">
+          <view class="form-label required">费用（元）</view>
+          <t-input
+            type="digit"
+            value="{{formData.cost}}"
+            placeholder="请输入费用"
+            bind:change="onCostInput"
+          />
+          <text wx:if="{{errors.cost}}" class="error-tip">{{errors.cost}}</text>
+        </view>
+      </view>
+
+      <!-- 保养项目 -->
+      <view class="form-item">
+        <view class="form-label required">保养项目</view>
+        <t-checkbox-group value="{{formData.items}}" bind:change="onItemsChange">
+          <view class="checkbox-grid">
+            <t-checkbox
+              wx:for="{{itemOptions}}"
+              wx:key="value"
+              value="{{item.value}}"
+              label="{{item.label}}"
+              checked="{{item.checked}}"
+            />
+          </view>
+        </t-checkbox-group>
+        <text wx:if="{{errors.items}}" class="error-tip">{{errors.items}}</text>
+      </view>
+
+      <!-- 备注 -->
+      <view class="form-item">
+        <view class="form-label">备注（选填）</view>
+        <t-textarea
+          value="{{formData.notes}}"
+          placeholder="请输入备注"
+          maxlength="200"
+          indicator
+          bind:change="onNotesInput"
+        />
+        <text wx:if="{{errors.notes}}" class="error-tip">{{errors.notes}}</text>
+      </view>
+    </view>
+
+    <!-- 占位，避免底部按钮遮挡 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部按钮 -->
+  <view class="form-footer">
+    <t-button theme="default" size="large" bind:tap="onCancel">取消</t-button>
+    <t-button theme="primary" size="large" bind:tap="onSave">保存</t-button>
+  </view>
+
+  <!-- 保养类型 Picker -->
+  <t-picker
+    visible="{{showTypePicker}}"
+    title="选择保养类型"
+    value="{{formData.type}}"
+    data-key="type"
+    keys="{{['label', 'value']}}"
+    columns="{{typeColumns}}"
+    bind:confirm="onTypePickerConfirm"
+    bind:cancel="onTypePickerCancel"
+  />
+
+  <!-- 保养日期 Picker -->
+  <t-date-time-picker
+    visible="{{showDatePicker}}"
+    title="选择保养日期"
+    mode="minute"
+    value="{{formData.date}}"
+    format="YYYY-MM-DD HH:mm"
+    bind:confirm="onDatePickerConfirm"
+    bind:cancel="onDatePickerCancel"
+  />
+</view>

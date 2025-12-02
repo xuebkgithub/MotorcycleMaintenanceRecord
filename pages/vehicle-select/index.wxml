@@ -1,0 +1,33 @@
+<view class="vehicle-select-page">
+  <!-- 车辆列表 -->
+  <view class="vehicle-list">
+    <t-cell-group wx:if="{{vehicles.length > 0}}">
+      <t-cell
+        wx:for="{{vehicles}}"
+        wx:key="id"
+        title="{{item.name}}"
+        note="{{item.model}}"
+        hover
+        data-id="{{item.id}}"
+        bind:click="onSelectVehicle"
+      >
+        <!-- 当前车辆显示勾选图标 -->
+        <view slot="right-icon">
+          <t-icon
+            wx:if="{{item.id === currentVehicleId}}"
+            name="check-circle-filled"
+            size="48rpx"
+            color="#0052D9"
+          />
+        </view>
+      </t-cell>
+    </t-cell-group>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <t-icon name="car" size="120rpx" color="#DCDCDC" />
+      <text class="empty-text">暂无车辆</text>
+      <text class="empty-hint">请先在"我的-车辆信息"中添加车辆</text>
+    </view>
+  </view>
+</view>

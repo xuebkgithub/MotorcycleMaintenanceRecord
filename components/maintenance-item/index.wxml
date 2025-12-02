@@ -1,0 +1,14 @@
+<view class="maintenance-item" bindtap="onTap">
+  <view class="maintenance-item__header">
+    <view class="maintenance-item__type">{{record.type}}</view>
+    <view class="maintenance-item__cost">¥{{record.cost}}</view>
+  </view>
+  <view class="maintenance-item__meta">
+    <text class="meta-item">{{record.date}}</text>
+    <text class="meta-divider">·</text>
+    <text class="meta-item">{{record.mileage}}km</text>
+  </view>
+  <view class="maintenance-item__items" wx:if="{{record.items && record.items.length > 0}}">
+    <text wx:for="{{record.items}}" wx:key="index" class="item-tag">{{item}}</text>
+  </view>
+</view>

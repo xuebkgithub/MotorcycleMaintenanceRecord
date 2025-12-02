@@ -1,0 +1,54 @@
+<view class="maintenance-list-page">
+  <!-- 统计头部 -->
+  <list-stats stats="{{stats}}" />
+
+  <!-- 记录列表 -->
+  <scroll-view
+    class="records-scroll"
+    scroll-y
+    bindscrolltolower="onScrollToLower"
+    lower-threshold="100"
+  >
+    <view class="records-container">
+      <!-- 记录项（左滑删除）-->
+      <block wx:for="{{displayRecords}}" wx:key="id">
+        <t-swipe-cell
+          right="{{[{ text: '删除', className: 'btn-delete' }]}}"
+          bind:click="onSwipeAction"
+          data-id="{{item.id}}"
+        >
+          <maintenance-item
+            record="{{item}}"
+            bind:itemtap="onRecordTap"
+          />
+        </t-swipe-cell>
+      </block>
+
+      <!-- 加载更多提示 -->
+      <view class="load-more" wx:if="{{displayRecords.length > 0}}">
+        <text wx:if="{{loading}}" class="load-more-text">加载中...</text>
+        <text wx:elif="{{hasMore}}" class="load-more-text">上拉加载更多</text>
+        <text wx:else class="load-more-text">没有更多了</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{displayRecords.length === 0 && !loading}}">
+        <text class="empty-text">暂无保养记录</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 悬浮按钮 -->
+  <t-fab icon="add" bind:click="onFabClick" />
+
+  <!-- 删除确认对话框 -->
+  <t-dialog
+    visible="{{showDeleteDialog}}"
+    title="确认删除"
+    content="删除后无法恢复，确定要删除这条保养记录吗？"
+    confirm-btn="删除"
+    cancel-btn="取消"
+    bind:confirm="onConfirmDelete"
+    bind:cancel="onCancelDelete"
+  />
+</view>

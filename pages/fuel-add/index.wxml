@@ -1,0 +1,176 @@
+<!-- 油耗记录新增/编辑页面 -->
+<view class="fuel-add-page">
+  <!-- 导航栏 -->
+  <t-navbar title="{{isEditMode ? '编辑油耗记录' : '新增油耗记录'}}" />
+
+  <scroll-view scroll-y class="form-scroll">
+    <view class="form-container">
+      <!-- 加油时间 -->
+      <view class="form-item">
+        <view class="form-label required">加油时间</view>
+        <view class="picker-wrapper" bind:tap="onTimePickerShow">
+          <text class="picker-text {{formData.time ? '' : 'placeholder'}}">
+            {{formData.time || '请选择加油时间'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+        <text wx:if="{{errors.time}}" class="error-tip">{{errors.time}}</text>
+      </view>
+
+      <!-- 油品类型 -->
+      <view class="form-item">
+        <view class="form-label required">油品类型</view>
+        <view class="picker-wrapper" bind:tap="onFuelTypePickerShow">
+          <text class="picker-text {{formData.fuelType ? '' : 'placeholder'}}">
+            {{formData.fuelType || '请选择油品类型'}}
+          </text>
+          <text class="picker-arrow">›</text>
+        </view>
+        <text wx:if="{{errors.fuelType}}" class="error-tip">{{errors.fuelType}}</text>
+      </view>
+
+      <!-- 总里程 -->
+      <view class="form-item">
+        <view class="form-label required">总里程（km）</view>
+        <t-input
+          type="number"
+          value="{{formData.totalMileage}}"
+          placeholder="请输入总里程"
+          bind:change="onTotalMileageInput"
+        />
+        <text wx:if="{{errors.totalMileage}}" class="error-tip">{{errors.totalMileage}}</text>
+      </view>
+
+      <!-- 显示金额 + 加油量 + 显示单价（三列）-->
+      <view class="form-row three-columns">
+        <view class="form-item third">
+          <view class="form-label required">显示金额</view>
+          <t-input
+            type="digit"
+            value="{{formData.displayAmount}}"
+            placeholder="显示金额"
+            bind:change="onDisplayAmountInput"
+          />
+          <text wx:if="{{errors.displayAmount}}" class="error-tip">{{errors.displayAmount}}</text>
+        </view>
+
+        <view class="form-item third">
+          <view class="form-label required">加油量(L)</view>
+          <t-input
+            type="digit"
+            value="{{formData.fuelVolume}}"
+            placeholder="加油量"
+            bind:change="onFuelVolumeInput"
+          />
+          <text wx:if="{{errors.fuelVolume}}" class="error-tip">{{errors.fuelVolume}}</text>
+        </view>
+
+        <view class="form-item third">
+          <view class="form-label required">显示单价</view>
+          <t-input
+            type="digit"
+            value="{{formData.displayUnitPrice}}"
+            placeholder="显示单价"
+            bind:change="onDisplayUnitPriceInput"
+          />
+          <text wx:if="{{errors.displayUnitPrice}}" class="error-tip">{{errors.displayUnitPrice}}</text>
+        </view>
+      </view>
+
+      <!-- 实付金额 + 优惠金额 + 实际单价（三列）-->
+      <view class="form-row three-columns">
+        <view class="form-item third">
+          <view class="form-label required">实付金额</view>
+          <t-input
+            type="digit"
+            value="{{formData.actualAmount}}"
+            placeholder="实付金额"
+            bind:change="onActualAmountInput"
+          />
+          <text wx:if="{{errors.actualAmount}}" class="error-tip">{{errors.actualAmount}}</text>
+        </view>
+
+        <view class="form-item third">
+          <view class="form-label required">优惠金额</view>
+          <t-input
+            type="digit"
+            value="{{formData.discount}}"
+            placeholder="优惠金额"
+            bind:change="onDiscountInput"
+          />
+          <text wx:if="{{errors.discount}}" class="error-tip">{{errors.discount}}</text>
+        </view>
+
+        <view class="form-item third">
+          <view class="form-label required">实际单价</view>
+          <t-input
+            type="digit"
+            value="{{formData.actualUnitPrice}}"
+            placeholder="实际单价"
+            bind:change="onActualUnitPriceInput"
+          />
+          <text wx:if="{{errors.actualUnitPrice}}" class="error-tip">{{errors.actualUnitPrice}}</text>
+        </view>
+      </view>
+
+      <!-- 是否加满 -->
+      <green-radio-group
+        label="是否加满"
+        options="{{fullOptions}}"
+        value="{{formData.isFull}}"
+        bind:change="onIsFullChange"
+      />
+      <text wx:if="{{errors.isFull}}" class="error-tip error-standalone">{{errors.isFull}}</text>
+
+      <!-- 油灯是否亮 -->
+      <green-radio-group
+        label="油灯是否亮"
+        options="{{lightOptions}}"
+        value="{{formData.isLightOn}}"
+        bind:change="onIsLightOnChange"
+      />
+      <text wx:if="{{errors.isLightOn}}" class="error-tip error-standalone">{{errors.isLightOn}}</text>
+
+      <!-- 上次是否记录 -->
+      <green-radio-group
+        label="上次是否记录"
+        options="{{recordOptions}}"
+        value="{{formData.isLastRecorded}}"
+        bind:change="onIsLastRecordedChange"
+      />
+      <text wx:if="{{errors.isLastRecorded}}" class="error-tip error-standalone">{{errors.isLastRecorded}}</text>
+    </view>
+
+    <!-- 占位，避免底部按钮遮挡 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部按钮 -->
+  <view class="form-footer">
+    <t-button theme="default" size="large" bind:tap="onCancel">取消</t-button>
+    <t-button theme="primary" size="large" bind:tap="onSave">保存</t-button>
+  </view>
+
+  <!-- 加油时间 Picker -->
+  <t-date-time-picker
+    visible="{{showTimePicker}}"
+    title="选择加油时间"
+    mode="minute"
+    value="{{formData.time}}"
+    format="YYYY-MM-DD HH:mm"
+    bind:confirm="onTimePickerConfirm"
+    bind:cancel="onTimePickerCancel"
+  />
+
+  <!-- 油品类型 Picker -->
+  <t-picker
+    visible="{{showFuelTypePicker}}"
+    title="选择油品类型"
+    value="{{formData.fuelType}}"
+    data-key="fuelType"
+    keys="{{['label', 'value']}}"
+    columns="{{fuelTypeColumns}}"
+    bind:confirm="onFuelTypePickerConfirm"
+    bind:cancel="onFuelTypePickerCancel"
+  />
+</view>

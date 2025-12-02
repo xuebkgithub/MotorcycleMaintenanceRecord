@@ -1,0 +1,112 @@
+/* 保养详情页样式 */
+
+.maintenance-detail-page {
+  min-height: 100vh;
+  background-color: var(--td-bg-color-page);
+  padding-bottom: 32rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--td-text-color-placeholder);
+}
+
+/* 未找到状态 */
+.not-found-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.not-found-text {
+  font-size: 28rpx;
+  color: var(--td-text-color-placeholder);
+}
+
+/* 详情内容 */
+.detail-content {
+  padding-top: 0;
+}
+
+/* 头部信息 */
+.detail-header {
+  background: linear-gradient(135deg, var(--td-primary-color-7), var(--td-primary-color-8));
+  padding: 198rpx 32rpx 48rpx 32rpx;  /* 150rpx间距 + 48rpx原始上边距 */
+  margin-bottom: 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-type {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.header-cost {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* 保养项目列表 */
+.items-list {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.item-tag {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 20rpx;
+  background-color: var(--td-bg-color-container);
+  border-radius: 8rpx;
+  border: 2rpx solid var(--td-component-border);
+}
+
+.item-text {
+  font-size: 28rpx;
+  color: var(--td-text-color-primary);
+}
+
+/* 底部按钮栏 */
+.detail-footer {
+  display: flex;
+  gap: 16rpx;
+  padding: 32rpx 32rpx 48rpx;
+  margin-top: 16rpx;
+}
+
+.detail-footer t-button {
+  flex: 1;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .maintenance-detail-page {
+    background-color: var(--td-bg-color-page);
+  }
+
+  .detail-header {
+    background: linear-gradient(135deg, var(--td-primary-color-6), var(--td-primary-color-7));
+  }
+
+  .item-tag {
+    background-color: var(--td-bg-color-container);
+    border-color: var(--td-component-border);
+  }
+}

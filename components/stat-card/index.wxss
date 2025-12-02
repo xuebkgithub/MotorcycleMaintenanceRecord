@@ -1,0 +1,36 @@
+/* 统计卡片组件样式 */
+
+.stat-card {
+  height: 160rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--td-bg-color-container);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.stat-card__icon {
+  margin-bottom: 12rpx;
+}
+
+.stat-card__value {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+  margin-bottom: 8rpx;
+  text-align: center;
+}
+
+.stat-card__unit {
+  font-size: 24rpx;
+  font-weight: 400;
+  margin-left: 4rpx;
+}
+
+.stat-card__label {
+  font-size: 24rpx;
+  color: var(--td-text-color-secondary);
+  text-align: center;
+}

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "油耗列表",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "list-stats": "/components/list-stats/index",
+    "fuel-item": "/components/fuel-item/index",
+    "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell",
+    "t-fab": "tdesign-miniprogram/fab/fab",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
+  }
+}

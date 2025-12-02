@@ -1,0 +1,89 @@
+/* 首页样式 */
+
+/* 页面容器 */
+.home-page {
+  min-height: 100vh;
+  background-color: var(--td-bg-color-page);
+  padding-bottom: 32rpx;
+}
+
+/* 顶部横幅 */
+.home-banner {
+  position: relative;
+  height: 360rpx;
+  background-color: var(--td-primary-color-7);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 48rpx 32rpx;
+  overflow: hidden;
+}
+
+/* 横幅遮罩 */
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 82, 217, 0.3), rgba(0, 82, 217, 0.7));
+}
+
+/* 横幅内容 */
+.banner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.vehicle-model {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+.vehicle-mileage {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 统计宫格 */
+.stats-grid {
+  margin: 32rpx 24rpx;
+}
+
+/* 记录列表区域 */
+.records-section {
+  margin: 0 24rpx;
+  background: var(--td-bg-color-container);
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.records-list {
+  min-height: 400rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  height: 400rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--td-text-color-placeholder);
+  font-size: 28rpx;
+}
+
+/* 查看更多 */
+.view-more {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--td-primary-color-7);
+  font-size: 28rpx;
+  border-top: 1rpx solid var(--td-border-level-1-color);
+}

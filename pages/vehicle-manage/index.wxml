@@ -1,0 +1,78 @@
+<view class="vehicle-manage-page">
+  <!-- 车辆列表 -->
+  <view class="vehicle-list">
+    <t-cell-group wx:if="{{vehicles.length > 0}}">
+      <t-swipe-cell
+        wx:for="{{vehicles}}"
+        wx:key="id"
+        right="{{[{text: '删除', className: 'btn-delete'}]}}"
+        data-id="{{item.id}}"
+        data-index="{{index}}"
+        bind:action-click="onDeleteVehicle"
+      >
+        <t-cell
+          title="{{item.name}}"
+          description="{{item.model}}"
+          note="{{item.note}}"
+          hover
+          data-id="{{item.id}}"
+          bind:click="onEditVehicle"
+        >
+          <!-- 当前车辆显示标签 -->
+          <view slot="right-icon" class="vehicle-icons">
+            <!-- 默认车辆星标 -->
+            <t-icon
+              wx:if="{{item.isDefault}}"
+              name="star-filled"
+              size="40rpx"
+              color="#FFA500"
+              class="icon-star"
+              data-id="{{item.id}}"
+              catchtap="onSetDefault"
+            />
+            <t-icon
+              wx:else
+              name="star"
+              size="40rpx"
+              color="#DCDCDC"
+              class="icon-star"
+              data-id="{{item.id}}"
+              catchtap="onSetDefault"
+            />
+            <!-- 当前车辆勾选 -->
+            <t-icon
+              wx:if="{{item.id === currentVehicleId}}"
+              name="check-circle-filled"
+              size="40rpx"
+              color="#0052D9"
+              class="icon-check"
+            />
+          </view>
+        </t-cell>
+      </t-swipe-cell>
+    </t-cell-group>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <t-icon name="car" size="120rpx" color="#DCDCDC" />
+      <text class="empty-text">暂无车辆</text>
+      <text class="empty-hint">点击右下角按钮添加车辆</text>
+    </view>
+  </view>
+
+  <!-- 底部按钮区域 -->
+  <view class="bottom-buttons">
+    <t-button theme="light" size="large" bind:tap="onBack">返回</t-button>
+  </view>
+
+  <!-- 悬浮按钮 -->
+  <t-fab
+    icon="add"
+    bind:click="onAddVehicle"
+  />
+
+  <!-- 提示文本 -->
+  <view class="hint-text">
+    <text>左滑删除，点击编辑，点星标设为默认</text>
+  </view>
+</view>

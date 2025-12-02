@@ -1,0 +1,30 @@
+<!-- 操作选择器 -->
+<t-dialog
+  visible="{{visible}}"
+  title="记一笔"
+  confirm-btn=""
+  cancel-btn=""
+  bind:cancel="onCancel"
+>
+  <view class="selector-content">
+    <!-- 油耗记录选项 -->
+    <view
+      class="selector-item"
+      data-type="fuel"
+      bind:tap="onSelectType"
+    >
+      <t-icon name="gas-station" size="48rpx" color="#0052D9" />
+      <text class="selector-label">油耗记录</text>
+    </view>
+
+    <!-- 保养记录选项 -->
+    <view
+      class="selector-item"
+      data-type="maintenance"
+      bind:tap="onSelectType"
+    >
+      <t-icon name="tools" size="48rpx" color="#0052D9" />
+      <text class="selector-label">保养记录</text>
+    </view>
+  </view>
+</t-dialog>

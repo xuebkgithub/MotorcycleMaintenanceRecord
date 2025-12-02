@@ -1,0 +1,11 @@
+<view class="stat-card">
+  <view class="stat-card__icon">
+    <t-icon name="{{icon}}" size="48rpx" color="var(--td-primary-color-7)" />
+  </view>
+  <view class="stat-card__content">
+    <view class="stat-card__value">
+      {{value}}<text class="stat-card__unit" wx:if="{{unit}}">{{unit}}</text>
+    </view>
+    <view class="stat-card__label">{{label}}</view>
+  </view>
+</view>

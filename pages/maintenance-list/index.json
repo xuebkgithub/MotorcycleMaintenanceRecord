@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "保养列表",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "list-stats": "/components/list-stats/index",
+    "maintenance-item": "/components/maintenance-item/index",
+    "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell",
+    "t-fab": "tdesign-miniprogram/fab/fab",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
+  }
+}

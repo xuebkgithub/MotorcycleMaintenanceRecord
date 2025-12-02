@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "首页",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "stat-card": "/components/stat-card/index",
+    "maintenance-item": "/components/maintenance-item/index",
+    "fuel-item": "/components/fuel-item/index",
+    "t-fab": "tdesign-miniprogram/fab/fab"
+  }
+}

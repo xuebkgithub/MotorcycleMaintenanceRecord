@@ -1,0 +1,40 @@
+/* 车辆编辑页面样式 */
+
+.vehicle-edit-page {
+  min-height: 100vh;
+  background-color: var(--td-bg-color-page);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 120rpx);
+}
+
+.form-section {
+  padding: 32rpx 24rpx;
+}
+
+/* 按钮区域 */
+.button-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--td-bg-color-container);
+  padding: 24rpx 32rpx calc(env(safe-area-inset-bottom) + 24rpx);
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.button-section .t-button {
+  flex: 1;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .vehicle-edit-page {
+    background-color: var(--td-bg-color-page);
+  }
+
+  .button-section {
+    background-color: var(--td-bg-color-container);
+    box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.3);
+  }
+}

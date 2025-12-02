@@ -1,0 +1,15 @@
+<!-- 绿色单选按钮组 -->
+<view class="green-radio-group">
+  <view class="green-radio-label">{{label}}</view>
+  <view class="green-radio-options">
+    <view
+      wx:for="{{options}}"
+      wx:key="label"
+      class="green-radio-option {{value === item.value ? 'selected' : ''}}"
+      data-value="{{item.value}}"
+      bind:tap="onSelect"
+    >
+      {{item.label}}
+    </view>
+  </view>
+</view>

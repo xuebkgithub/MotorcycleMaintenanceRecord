@@ -1,0 +1,55 @@
+/* 绿色单选按钮组样式 */
+
+.green-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.green-radio-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--td-text-color-primary);
+}
+
+.green-radio-options {
+  display: flex;
+  gap: 16rpx;
+}
+
+.green-radio-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--td-text-color-secondary);
+  background-color: var(--td-bg-color-container);
+  border: 2rpx solid var(--td-component-border);
+  border-radius: 8rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.green-radio-option.selected {
+  color: #ffffff;
+  background-color: var(--td-success-color-5);
+  border-color: var(--td-success-color-5);
+  font-weight: 600;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .green-radio-option {
+    background-color: var(--td-bg-color-container);
+    border-color: var(--td-component-border);
+  }
+
+  .green-radio-option.selected {
+    background-color: var(--td-success-color-6);
+    border-color: var(--td-success-color-6);
+  }
+}

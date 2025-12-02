@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "保养详情",
+  "usingComponents": {
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
+  }
+}

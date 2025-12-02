@@ -1,0 +1,44 @@
+/* 加油记录项组件样式 */
+
+.fuel-item {
+  padding: 24rpx 32rpx;
+  background: var(--td-bg-color-container);
+  border-bottom: 1rpx solid var(--td-border-level-1-color);
+}
+
+.fuel-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.fuel-item__volume {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--td-text-color-primary);
+}
+
+.fuel-item__cost {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--td-error-color-6);
+}
+
+.fuel-item__meta {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: var(--td-text-color-secondary);
+  margin-bottom: 8rpx;
+}
+
+.meta-divider {
+  margin: 0 8rpx;
+}
+
+.fuel-item__consumption {
+  font-size: 24rpx;
+  color: var(--td-success-color-5);
+  font-weight: 500;
+}

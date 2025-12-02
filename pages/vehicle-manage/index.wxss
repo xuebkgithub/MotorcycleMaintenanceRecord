@@ -1,0 +1,88 @@
+/* 车辆管理页面样式 */
+
+.vehicle-manage-page {
+  min-height: 100vh;
+  background-color: var(--td-bg-color-page);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 200rpx);
+}
+
+.vehicle-list {
+  padding: 32rpx 24rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 64rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: var(--td-text-color-primary);
+  margin-top: 32rpx;
+}
+
+.empty-hint {
+  font-size: 28rpx;
+  color: var(--td-text-color-placeholder);
+  margin-top: 16rpx;
+  text-align: center;
+}
+
+/* 车辆图标容器 */
+.vehicle-icons {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.icon-star {
+  margin-right: 8rpx;
+}
+
+/* 删除按钮样式 */
+.btn-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #E34D59;
+  color: #ffffff;
+}
+
+/* 底部按钮区域 */
+.bottom-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--td-bg-color-container);
+  padding: 24rpx 32rpx calc(env(safe-area-inset-bottom) + 24rpx);
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+/* 提示文本 */
+.hint-text {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 200rpx);
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 16rpx;
+}
+
+.hint-text text {
+  font-size: 24rpx;
+  color: var(--td-text-color-placeholder);
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .vehicle-manage-page {
+    background-color: var(--td-bg-color-page);
+  }
+}
