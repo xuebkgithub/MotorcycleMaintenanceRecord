@@ -75,8 +75,75 @@ Page({
     }
   },
 
-  // 快速导出（shareFileMessage）
-  onQuickExport() {
+  // 导出数据（统一入口）
+  async onExportData() {
+    try {
+      // 1. 显示格式选择对话框
+      const format = await this.showExportFormatDialog();
+      if (!format) return; // 用户取消
+
+      // 2. 根据格式执行不同的导出流程
+      if (format === 'json') {
+        // JSON格式：再选择快速导出或实时导出
+        const mode = await this.showJSONExportModeDialog();
+        if (!mode) return; // 用户取消
+
+        if (mode === 'quick') {
+          await this.exportJSONQuick();
+        } else if (mode === 'realtime') {
+          await this.exportJSONRealtime();
+        }
+      } else if (format === 'csv') {
+        // CSV格式：直接导出
+        await this.exportCSVData();
+      }
+
+    } catch (err) {
+      console.error('[Profile] 导出数据失败:', err);
+      // 已在具体方法中处理错误，这里不重复提示
+    }
+  },
+
+  // 显示导出格式选择对话框
+  showExportFormatDialog() {
+    return new Promise((resolve) => {
+      wx.showActionSheet({
+        itemList: ['JSON 格式（完整备份）', 'CSV 格式（油耗记录）'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            resolve('json');
+          } else if (res.tapIndex === 1) {
+            resolve('csv');
+          }
+        },
+        fail: () => {
+          resolve(null); // 用户取消
+        }
+      });
+    });
+  },
+
+  // 显示 JSON 导出模式选择对话框
+  showJSONExportModeDialog() {
+    return new Promise((resolve) => {
+      wx.showActionSheet({
+        itemList: ['快速导出（推荐）', '实时导出'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            resolve('quick');
+          } else if (res.tapIndex === 1) {
+            resolve('realtime');
+          }
+        },
+        fail: () => {
+          resolve(null); // 用户取消
+        }
+      });
+    });
+  },
+
+  // 快速导出 JSON（重命名方法）
+  async exportJSONQuick() {
     try {
       // 1. 检查预生成文件（同步检查）
       const fileInfo = this.data.preparedFileInfo;
@@ -136,8 +203,8 @@ Page({
     }
   },
 
-  // 实时导出（shareFileMessage，实时生成最新数据，使用同步写入）
-  onViewAndExport() {
+  // 实时导出 JSON（重命名方法）
+  async exportJSONRealtime() {
     try {
       // 1. 收集所有数据（同步）
       const storage = require('../../utils/storage');
@@ -225,8 +292,116 @@ Page({
     }
   },
 
-  // 导入数据
+  // 导出 CSV 数据（重命名方法）
+  async exportCSVData() {
+    try {
+      // 1. 检查当前车辆
+      const vehicleId = storage.getCurrentVehicleId();
+      if (!vehicleId) {
+        wx.showModal({
+          title: '提示',
+          content: '请先选择车辆',
+          showCancel: false
+        });
+        return;
+      }
+
+      // 2. 检查是否有数据
+      const allRecords = storage.getFuelRecords();
+      const vehicleRecords = allRecords.filter(r => r.vehicleId === vehicleId);
+
+      if (vehicleRecords.length === 0) {
+        wx.showModal({
+          title: '提示',
+          content: '当前车辆暂无油耗记录',
+          showCancel: false
+        });
+        return;
+      }
+
+      // 3. 调用导出函数
+      wx.showLoading({ title: '正在生成CSV...' });
+      const csvExporter = require('../../utils/csv-exporter');
+      const result = await csvExporter.exportFuelRecordsAsCSV();
+      wx.hideLoading();
+
+      // 4. 处理结果
+      if (result.success) {
+        console.log('[Profile] CSV导出成功');
+        // wx.shareFileMessage 成功后会自动显示 Toast
+      } else if (result.userCancel) {
+        console.log('[Profile] 用户取消CSV分享');
+        // 用户取消不提示
+      } else {
+        throw new Error('CSV导出失败');
+      }
+
+    } catch (err) {
+      wx.hideLoading();
+      console.error('[Profile] CSV导出失败:', err);
+
+      wx.showModal({
+        title: 'CSV导出失败',
+        content: err.message || '未知错误，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
+  },
+
+  // 导入数据（入口）
   async onImportData() {
+    try {
+      // 1. 显示格式选择对话框
+      const format = await this.showFormatSelectionDialog();
+      if (!format) return; // 用户取消
+
+      // 2. 根据格式执行不同的导入流程
+      if (format === 'json') {
+        await this.importJSONData();
+      } else if (format === 'csv') {
+        await this.importCSVData();
+      }
+
+    } catch (err) {
+      wx.hideLoading();
+
+      // 用户取消不提示
+      if (err.message === '已取消导入') {
+        return;
+      }
+
+      // 显示错误提示
+      wx.showModal({
+        title: '导入失败',
+        content: err.message || '未知错误，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
+  },
+
+  // 显示格式选择对话框
+  showFormatSelectionDialog() {
+    return new Promise((resolve) => {
+      wx.showActionSheet({
+        itemList: ['JSON 格式（完整备份）', 'CSV 格式（油耗记录）'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            resolve('json');
+          } else if (res.tapIndex === 1) {
+            resolve('csv');
+          }
+        },
+        fail: () => {
+          resolve(null); // 用户取消
+        }
+      });
+    });
+  },
+
+  // 导入 JSON 数据（原有流程）
+  async importJSONData() {
     try {
       // 1. 选择文件
       const fileInfo = await importExport.chooseImportFile();
@@ -273,20 +448,94 @@ Page({
       });
 
     } catch (err) {
-      wx.hideLoading();
+      throw err; // 向上抛出错误
+    }
+  },
 
-      // 用户取消不提示
-      if (err.message === '已取消导入') {
+  // 导入 CSV 数据（新流程）
+  async importCSVData() {
+    try {
+      // 1. 检查当前车辆
+      const vehicleId = storage.getCurrentVehicleId();
+      if (!vehicleId) {
+        wx.showModal({
+          title: '提示',
+          content: 'CSV 导入需要先选择车辆，请在首页选择车辆后再试',
+          showCancel: false
+        });
         return;
       }
 
-      // 显示错误提示
-      wx.showModal({
-        title: '导入失败',
-        content: err.message || '未知错误，请重试',
-        showCancel: false,
-        confirmText: '知道了'
+      // 2. 选择 CSV 文件
+      const fileInfo = await importExport.chooseCSVFile();
+
+      // 3. 解析 CSV 文件
+      wx.showLoading({ title: '正在解析 CSV...' });
+      const csvData = await importExport.parseCSVFile(fileInfo.path);
+      wx.hideLoading();
+
+      // 4. 校验数据
+      const csvValidator = require('../../utils/csv-validator');
+      const csvParser = require('../../utils/csv-parser');
+
+      // 映射 CSV 数据为油耗记录（使用默认油品类型，后续在预览页可修改）
+      const tempFuelTypes = new Array(csvData.length).fill('92#');
+      const mappedRecords = csvData.map((row, index) => {
+        try {
+          return csvParser.mapCSVToFuelRecord(row, vehicleId, tempFuelTypes[index]);
+        } catch (err) {
+          console.error(`[Profile] CSV 第${index + 2}行映射失败:`, err);
+          return {
+            _error: err.message,
+            _rowIndex: index + 2,
+            ...row
+          };
+        }
       });
+
+      // 分离成功和失败的记录
+      const successRecords = mappedRecords.filter(r => !r._error);
+      const mappingErrors = mappedRecords.filter(r => r._error).map(r => ({
+        row: r._rowIndex,
+        field: '数据映射',
+        message: r._error
+      }));
+
+      // 校验所有记录
+      const validationResults = csvValidator.validateAllRecords(successRecords);
+
+      // 检测重复
+      const existingRecords = storage.getFuelRecords().filter(r => r.vehicleId === vehicleId);
+      const { duplicates, safeRecords } = csvValidator.detectDuplicates(
+        validationResults.validRecords,
+        existingRecords
+      );
+
+      // 合并所有错误
+      const allErrors = [...mappingErrors, ...validationResults.errors];
+
+      console.log('[Profile] CSV 解析完成:', {
+        总记录: csvData.length,
+        映射错误: mappingErrors.length,
+        校验错误: validationResults.errors.length,
+        重复记录: duplicates.length,
+        可导入: safeRecords.length
+      });
+
+      // 5. 缓存数据并跳转到预览页面
+      wx.setStorageSync('_csv_import_preview', {
+        csvData,
+        errors: allErrors,
+        duplicates,
+        safeRecords
+      });
+
+      wx.navigateTo({
+        url: '/pages/csv-import-preview/index'
+      });
+
+    } catch (err) {
+      throw err; // 向上抛出错误
     }
   },
 

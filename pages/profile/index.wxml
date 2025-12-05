@@ -11,22 +11,13 @@
   <!-- 功能菜单 -->
   <view class="menu-section">
     <t-cell-group title="数据管理">
-      <!-- 快速导出 -->
+      <!-- 导出数据 -->
       <t-cell
-        title="快速导出"
-        note="使用最近数据快照（推荐）"
-        left-icon="share"
+        title="导出数据"
+        note="导出备份或油耗记录"
+        left-icon="upload"
         hover
-        bind:click="onQuickExport"
-      />
-
-      <!-- 实时导出 -->
-      <t-cell
-        title="实时导出"
-        note="生成最新数据后分享"
-        left-icon="file"
-        hover
-        bind:click="onViewAndExport"
+        bind:click="onExportData"
       />
 
       <!-- 导入数据 -->
