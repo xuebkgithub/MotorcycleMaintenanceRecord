@@ -42,22 +42,24 @@ Page({
 
   // 初始化数据
   initData() {
-    // 检查是否有数据，无则初始化 Mock 数据
-    let vehicleInfo = storage.getVehicleInfo();
-    if (!vehicleInfo.model) {
-      mockData.initMockData();
-    }
+    // 注释掉自动创建Mock数据的逻辑，清空数据后应该显示空状态
+    // // 检查是否有数据，无则初始化 Mock 数据
+    // let vehicleInfo = storage.getVehicleInfo();
+    // if (!vehicleInfo.model) {
+    //   mockData.initMockData();
+    // }
 
     // 获取当前车辆信息
     const currentVehicle = storage.getCurrentVehicle();
+    let vehicleInfo;
     if (currentVehicle) {
       vehicleInfo = {
         model: currentVehicle.model || '未设置车辆',
         mileage: currentVehicle.mileage || 0
       };
     } else {
-      // 兼容旧数据
-      vehicleInfo = storage.getVehicleInfo();
+      // 兼容旧数据或空状态
+      vehicleInfo = storage.getVehicleInfo() || { model: '未设置车辆', mileage: 0 };
     }
 
     // 读取当前车辆的数据

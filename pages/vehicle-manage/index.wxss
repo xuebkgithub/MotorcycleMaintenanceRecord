@@ -66,6 +66,14 @@
   z-index: 10;
 }
 
+/* FAB 悬浮按钮 */
+t-fab {
+  position: fixed;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  right: 32rpx;
+  z-index: 99;
+}
+
 /* 提示文本 */
 .hint-text {
   position: fixed;
@@ -74,6 +82,7 @@
   right: 0;
   text-align: center;
   padding: 16rpx;
+  z-index: 5;
 }
 
 .hint-text text {
