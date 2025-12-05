@@ -12,7 +12,8 @@
     "pages/fuel-detail/index",
     "pages/fuel-overview/index",
     "pages/maintenance-add/index",
-    "pages/fuel-add/index"
+    "pages/fuel-add/index",
+    "pages/csv-import-preview/index"
   ],
   "themeLocation": "theme.json",
   "usingComponents": {

@@ -1,0 +1,126 @@
+<view class="csv-preview-page">
+  <!-- 统计信息卡片 -->
+  <view class="stats-card">
+    <view class="stats-header">
+      <text class="stats-title">导入预览</text>
+      <text class="stats-vehicle">车辆：{{vehicleName}}</text>
+    </view>
+
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{totalCount}}</text>
+        <text class="stat-label">总计</text>
+      </view>
+      <view class="stat-item valid">
+        <text class="stat-value">{{validCount}}</text>
+        <text class="stat-label">有效</text>
+      </view>
+      <view class="stat-item error" wx:if="{{errorCount > 0}}" bindtap="onViewErrorDetails">
+        <text class="stat-value">{{errorCount}}</text>
+        <text class="stat-label">错误</text>
+      </view>
+      <view class="stat-item duplicate" wx:if="{{duplicateCount > 0}}" bindtap="onViewDuplicateDetails">
+        <text class="stat-value">{{duplicateCount}}</text>
+        <text class="stat-label">重复</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据列表 -->
+  <view class="data-list">
+    <view
+      class="data-item {{getRecordStatus(index)}}"
+      wx:for="{{csvData}}"
+      wx:key="index"
+    >
+      <!-- 行号 -->
+      <view class="item-header">
+        <text class="row-number">第 {{index + 2}} 行</text>
+        <view class="status-badge">
+          <text class="status-text" wx:if="{{getRecordStatus(index) === 'valid'}}">✓ 有效</text>
+          <text class="status-text" wx:if="{{getRecordStatus(index) === 'error'}}">✗ 错误</text>
+          <text class="status-text" wx:if="{{getRecordStatus(index) === 'duplicate'}}">⚠ 重复</text>
+        </view>
+      </view>
+
+      <!-- 数据内容 -->
+      <view class="item-content">
+        <view class="data-row">
+          <text class="data-label">日期：</text>
+          <text class="data-value">{{item['日期']}}</text>
+        </view>
+        <view class="data-row">
+          <text class="data-label">公里数：</text>
+          <text class="data-value">{{item['公里数']}} km</text>
+        </view>
+        <view class="data-row">
+          <text class="data-label">油量：</text>
+          <text class="data-value">{{item['油量']}} L</text>
+        </view>
+        <view class="data-row">
+          <text class="data-label">油费：</text>
+          <text class="data-value">¥{{item['油费']}}</text>
+        </view>
+
+        <!-- 油品类型选择 -->
+        <view class="data-row fuel-type-row">
+          <text class="data-label">油品类型：</text>
+          <view
+            class="fuel-type-selector"
+            data-index="{{index}}"
+            bindtap="onSelectFuelType"
+          >
+            <text class="fuel-type-value">{{fuelTypes[index]}}</text>
+            <t-icon name="chevron-down" size="32rpx" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 错误提示 -->
+      <view class="error-tip" wx:if="{{getRecordStatus(index) === 'error'}}">
+        <t-icon name="error-circle-filled" size="32rpx" color="#FA5151" />
+        <text class="error-text">
+          {{getRecordErrors(index)[0].field}}：{{getRecordErrors(index)[0].message}}
+        </text>
+      </view>
+
+      <!-- 重复提示 -->
+      <view class="duplicate-tip" wx:if="{{getRecordStatus(index) === 'duplicate'}}">
+        <t-icon name="info-circle-filled" size="32rpx" color="#FF9800" />
+        <text class="duplicate-text">
+          {{getRecordDuplicate(index).reason}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <t-button
+      theme="default"
+      size="large"
+      variant="outline"
+      bind:tap="onCancelImport"
+    >
+      取消
+    </t-button>
+    <t-button
+      theme="primary"
+      size="large"
+      disabled="{{validCount === 0}}"
+      bind:tap="onConfirmImport"
+    >
+      导入 {{validCount}} 条
+    </t-button>
+  </view>
+
+  <!-- 油品类型选择器 -->
+  <t-picker
+    visible="{{showFuelTypePicker}}"
+    value="{{fuelTypes[currentRecordIndex]}}"
+    data-source="{{fuelTypeOptions}}"
+    title="选择油品类型"
+    bindconfirm="onFuelTypeConfirm"
+    bindcancel="onFuelTypeCancel"
+  />
+</view>
