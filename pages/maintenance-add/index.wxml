@@ -1,8 +1,5 @@
 <!-- 保养记录新增/编辑页面 -->
 <view class="maintenance-add-page">
-  <!-- 导航栏 -->
-  <t-navbar title="{{isEditMode ? '编辑保养记录' : '新增保养记录'}}" />
-
   <scroll-view scroll-y class="form-scroll">
     <view class="form-container">
       <!-- 保养类型 -->
@@ -99,13 +96,12 @@
   <t-picker
     visible="{{showTypePicker}}"
     title="选择保养类型"
-    value="{{formData.type}}"
-    data-key="type"
-    keys="{{['label', 'value']}}"
-    columns="{{typeColumns}}"
+    value="{{[formData.type]}}"
     bind:confirm="onTypePickerConfirm"
     bind:cancel="onTypePickerCancel"
-  />
+  >
+    <t-picker-item options="{{maintenanceTypeOptions}}" />
+  </t-picker>
 
   <!-- 保养日期 Picker -->
   <t-date-time-picker

@@ -20,21 +20,21 @@ Page({
     isEditMode: false,
     editId: '',
 
-    // 保养类型选项
-    typeColumns: [
-      [
-        { label: '换机油', value: '换机油' },
-        { label: '换机滤', value: '换机滤' },
-        { label: '换空滤', value: '换空滤' },
-        { label: '换火花塞', value: '换火花塞' },
-        { label: '换齿轮油', value: '换齿轮油' },
-        { label: '换刹车油', value: '换刹车油' },
-        { label: '换链条', value: '换链条' },
-        { label: '换轮胎', value: '换轮胎' },
-        { label: '换刹车片', value: '换刹车片' },
-        { label: '大保养', value: '大保养' },
-        { label: '其他', value: '其他' }
-      ]
+    // 保养类型选项（一维数组，符合TDesign Picker规范）
+    maintenanceTypeOptions: [
+      { label: '小保养', value: '小保养' },
+      { label: '大保养', value: '大保养' },
+      { label: '临时维修', value: '临时维修' },
+      { label: '换机油', value: '换机油' },
+      { label: '换机滤', value: '换机滤' },
+      { label: '换空滤', value: '换空滤' },
+      { label: '换火花塞', value: '换火花塞' },
+      { label: '换齿轮油', value: '换齿轮油' },
+      { label: '换刹车油', value: '换刹车油' },
+      { label: '换链条', value: '换链条' },
+      { label: '换轮胎', value: '换轮胎' },
+      { label: '换刹车片', value: '换刹车片' },
+      { label: '其他', value: '其他' }
     ],
 
     // 保养项目选项
@@ -107,9 +107,10 @@ Page({
   },
 
   onTypePickerConfirm(e) {
-    const { value } = e.detail;
+    const { value, label } = e.detail;
+    console.log('选中的保养类型:', value, label);
     this.setData({
-      'formData.type': value[0].value,
+      'formData.type': value[0],
       showTypePicker: false
     });
   },

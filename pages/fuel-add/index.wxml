@@ -1,8 +1,5 @@
 <!-- 油耗记录新增/编辑页面 -->
 <view class="fuel-add-page">
-  <!-- 导航栏 -->
-  <t-navbar title="{{isEditMode ? '编辑油耗记录' : '新增油耗记录'}}" />
-
   <scroll-view scroll-y class="form-scroll">
     <view class="form-container">
       <!-- 加油时间 -->
@@ -166,11 +163,10 @@
   <t-picker
     visible="{{showFuelTypePicker}}"
     title="选择油品类型"
-    value="{{formData.fuelType}}"
-    data-key="fuelType"
-    keys="{{['label', 'value']}}"
-    columns="{{fuelTypeColumns}}"
+    value="{{[formData.fuelType]}}"
     bind:confirm="onFuelTypePickerConfirm"
     bind:cancel="onFuelTypePickerCancel"
-  />
+  >
+    <t-picker-item options="{{fuelTypeOptions}}" />
+  </t-picker>
 </view>

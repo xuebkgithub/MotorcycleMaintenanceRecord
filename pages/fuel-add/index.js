@@ -27,13 +27,12 @@ Page({
     isEditMode: false,
     editId: '',
 
-    // 油品类型选项
-    fuelTypeColumns: [
-      [
-        { label: '95#', value: '95#' },
-        { label: '92#', value: '92#' },
-        { label: '98#', value: '98#' }
-      ]
+    // 油品类型选项（一维数组，符合TDesign Picker规范）
+    fuelTypeOptions: [
+      { label: '90#', value: '90#' },
+      { label: '92#', value: '92#' },
+      { label: '95#', value: '95#' },
+      { label: '98#', value: '98#' }
     ],
 
     // 布尔值选项
@@ -114,9 +113,10 @@ Page({
   },
 
   onFuelTypePickerConfirm(e) {
-    const { value } = e.detail;
+    const { value, label } = e.detail;
+    console.log('选中的油品:', value, label);
     this.setData({
-      'formData.fuelType': value[0].value,
+      'formData.fuelType': value[0],
       showFuelTypePicker: false
     });
   },

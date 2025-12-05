@@ -1,9 +1,8 @@
 {
-  "navigationBarTitleText": "油耗记录",
-  "navigationStyle": "custom",
+  "navigationBarTitleText": "新增油耗记录",
   "usingComponents": {
-    "t-navbar": "tdesign-miniprogram/navbar/navbar",
     "t-picker": "tdesign-miniprogram/picker/picker",
+    "t-picker-item": "tdesign-miniprogram/picker-item/picker-item",
     "t-date-time-picker": "tdesign-miniprogram/date-time-picker/date-time-picker",
     "t-input": "tdesign-miniprogram/input/input",
     "t-button": "tdesign-miniprogram/button/button",
