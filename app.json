@@ -10,6 +10,7 @@
     "pages/vehicle-edit/index",
     "pages/maintenance-detail/index",
     "pages/fuel-detail/index",
+    "pages/fuel-overview/index",
     "pages/maintenance-add/index",
     "pages/fuel-add/index"
   ],
@@ -44,8 +45,8 @@
         "selectedIconPath": "assets/tabbar/maintenance-active.png"
       },
       {
-        "pagePath": "pages/fuel-list/index",
-        "text": "油耗列表",
+        "pagePath": "pages/fuel-overview/index",
+        "text": "油耗概览",
         "iconPath": "assets/tabbar/fuel.png",
         "selectedIconPath": "assets/tabbar/fuel-active.png"
       },

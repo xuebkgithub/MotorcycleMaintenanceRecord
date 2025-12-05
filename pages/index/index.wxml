@@ -28,7 +28,7 @@
         />
       </t-grid-item>
 
-      <t-grid-item>
+      <t-grid-item bindtap="onViewFuelOverview">
         <stat-card
           label="近期油耗"
           value="{{stats.recentFuelConsumption}}"
@@ -37,7 +37,7 @@
         />
       </t-grid-item>
 
-      <t-grid-item>
+      <t-grid-item bindtap="onViewFuelOverview">
         <stat-card
           label="平均油耗"
           value="{{stats.averageFuelConsumption}}"

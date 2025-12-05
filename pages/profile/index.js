@@ -3,6 +3,7 @@
 
 const storage = require('../../utils/storage');
 const importExport = require('../../utils/import-export');
+const fuelMigration = require('../../utils/migrate-fuel-consumption');
 
 Page({
   data: {
@@ -337,6 +338,66 @@ Page({
         }
       });
     });
+  },
+
+  // 重新计算油耗
+  onRecalculateFuelConsumption() {
+    wx.showModal({
+      title: '重新计算油耗',
+      content: '将使用新的精确算法重新计算所有加油记录的油耗数据。\n\n此操作会覆盖现有的油耗数据，确认继续？',
+      confirmText: '确认',
+      cancelText: '取消',
+      confirmColor: '#0052D9',
+      success: (res) => {
+        if (res.confirm) {
+          this.executeRecalculate();
+        }
+      }
+    });
+  },
+
+  // 执行重新计算
+  executeRecalculate() {
+    try {
+      wx.showLoading({ title: '正在计算...' });
+
+      // 调用迁移函数重新计算油耗
+      const result = fuelMigration.migrate();
+
+      wx.hideLoading();
+
+      if (result.success) {
+        // 显示成功提示
+        let message = `计算完成！\n\n`;
+        message += `• 总记录数：${result.total} 条\n`;
+        message += `• 更新记录：${result.updated} 条\n`;
+        message += `• 未变化：${result.unchanged} 条`;
+
+        if (result.failed > 0) {
+          message += `\n• 计算失败：${result.failed} 条`;
+        }
+
+        wx.showModal({
+          title: '✅ 计算成功',
+          content: message,
+          showCancel: false,
+          confirmText: '知道了'
+        });
+      } else {
+        throw new Error(result.message || '计算失败');
+      }
+
+    } catch (err) {
+      wx.hideLoading();
+      console.error('[Profile] 重新计算油耗失败:', err);
+
+      wx.showModal({
+        title: '计算失败',
+        content: err.message || '未知错误，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
   },
 
   // 引导确认

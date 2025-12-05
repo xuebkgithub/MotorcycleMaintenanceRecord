@@ -37,6 +37,15 @@
         hover
         bind:click="onImportData"
       />
+
+      <!-- 重新计算油耗 -->
+      <t-cell
+        title="重新计算油耗"
+        note="重新计算所有加油记录的油耗数据"
+        left-icon="refresh"
+        hover
+        bind:click="onRecalculateFuelConsumption"
+      />
     </t-cell-group>
 
     <t-cell-group title="其他">

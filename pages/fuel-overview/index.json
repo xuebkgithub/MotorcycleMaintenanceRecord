@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "油耗概览",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

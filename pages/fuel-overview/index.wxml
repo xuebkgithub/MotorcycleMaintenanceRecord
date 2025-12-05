@@ -1,0 +1,91 @@
+<!-- 油耗概览页面 -->
+<view class="fuel-overview-page">
+  <!-- 顶部操作栏 -->
+  <view class="top-actions">
+    <view class="action-btn" bind:tap="onViewDetailRecords">
+      <t-icon name="view-list" size="20px" />
+      <text>查看详细记录</text>
+      <t-icon name="chevron-right" size="16px" />
+    </view>
+  </view>
+
+  <!-- 统计宫格 -->
+  <view class="stats-grid">
+    <!-- 第一行 -->
+    <view class="stat-card" wx:for="{{statsRow1}}" wx:key="label">
+      <view class="stat-value" style="color: {{item.color}}">{{item.value}}</view>
+      <view class="stat-unit">{{item.unit}}</view>
+      <view class="stat-label">{{item.label}}</view>
+    </view>
+
+    <!-- 第二行 -->
+    <view class="stat-card" wx:for="{{statsRow2}}" wx:key="label">
+      <view class="stat-value" style="color: {{item.color}}">{{item.value}}</view>
+      <view class="stat-unit">{{item.unit}}</view>
+      <view class="stat-label">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 算法说明区域（可折叠）-->
+  <view class="help-section">
+    <view class="help-header" bind:tap="toggleHelp">
+      <view class="help-title">
+        <text class="help-icon">📋</text>
+        <text>算法说明</text>
+      </view>
+      <t-icon name="{{helpExpanded ? 'chevron-up' : 'chevron-down'}}" size="32rpx" color="#909399" />
+    </view>
+
+    <view class="help-content" wx:if="{{helpExpanded}}">
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">平均油耗：使用加权算法计算，长途骑行权重更高</text>
+      </view>
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">平均行驶：总里程 ÷ 总天数，单位：公里/天</text>
+      </view>
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">平均油费：总费用 ÷ 总里程，单位：元/公里</text>
+      </view>
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">累计里程：所有加油记录中的最大里程数</text>
+      </view>
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">累计油费：所有加油记录的费用总和</text>
+      </view>
+      <view class="help-item">
+        <text class="help-bullet">•</text>
+        <text class="help-text">累计优惠：所有加油优惠金额的总和</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 油耗趋势图（预留）-->
+  <view class="chart-section">
+    <view class="chart-header">
+      <text class="chart-icon">📊</text>
+      <text class="chart-title">油耗趋势</text>
+    </view>
+    <view class="chart-placeholder">
+      <text class="placeholder-text">图表功能开发中，敬请期待</text>
+    </view>
+  </view>
+
+  <!-- 油费统计图（预留）-->
+  <view class="chart-section">
+    <view class="chart-header">
+      <text class="chart-icon">💰</text>
+      <text class="chart-title">油费统计</text>
+    </view>
+    <view class="chart-placeholder">
+      <text class="placeholder-text">图表功能开发中，敬请期待</text>
+    </view>
+  </view>
+
+  <!-- 底部留白 -->
+  <view style="height: 32rpx;"></view>
+</view>

@@ -3,6 +3,7 @@
 
 const storage = require('../../utils/storage');
 const validator = require('../../utils/form-validator');
+const calculator = require('../../utils/calculator');
 
 Page({
   data: {
@@ -204,13 +205,24 @@ Page({
       date: this.data.formData.time,
       mileage: Number(this.data.formData.totalMileage),
       volume: Number(Number(this.data.formData.fuelVolume).toFixed(2)),
-      cost: Number(Number(this.data.formData.actualAmount).toFixed(2)),
-      fuelConsumption: this.data.formData.fuelVolume > 0 ?
-        (Number(this.data.formData.fuelVolume) / 100).toFixed(2) : '0.00'
+      cost: Number(Number(this.data.formData.actualAmount).toFixed(2))
     };
 
-    // 3. 保存到 Storage
+    // 3. 计算油耗（使用新算法）
     const allRecords = storage.getFuelRecords();
+
+    // 绑定车辆ID（新增模式需要先设置，编辑模式已有）
+    if (!this.data.isEditMode) {
+      record.vehicleId = storage.getCurrentVehicleId();
+    }
+
+    // 调用油耗计算函数
+    const fuelConsumption = calculator.calculateSingleFuelConsumption(record, allRecords);
+    record.fuelConsumption = fuelConsumption;
+
+    console.log('[FuelAdd] 计算油耗:', fuelConsumption, 'L/100km');
+
+    // 4. 保存到 Storage
 
     if (this.data.isEditMode) {
       // 编辑模式：更新记录
@@ -219,15 +231,14 @@ Page({
         allRecords[index] = { ...allRecords[index], ...record };
       }
     } else {
-      // 新增模式：生成ID并添加，绑定当前车辆
+      // 新增模式：生成ID并添加
       record.id = 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      record.vehicleId = storage.getCurrentVehicleId();
       allRecords.unshift(record);
     }
 
     const success = storage.setFuelRecords(allRecords);
 
-    // 4. 反馈和导航
+    // 5. 反馈和导航
     if (success) {
       wx.showToast({
         title: this.data.isEditMode ? '修改成功' : '添加成功',

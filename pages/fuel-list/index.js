@@ -63,7 +63,9 @@ Page({
     }
 
     // 按日期倒序排列（最新的在前）
-    const sortedRecords = allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedRecords = allRecords.sort((a, b) =>
+      new Date(b.time || b.date) - new Date(a.time || a.date)
+    );
 
     // 计算统计数据
     const totalCount = sortedRecords.length;

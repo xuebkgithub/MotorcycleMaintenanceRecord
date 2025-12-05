@@ -158,6 +158,13 @@ Page({
     });
   },
 
+  // 查看油耗概览（跳转到 tabBar 页面）
+  onViewFuelOverview() {
+    wx.switchTab({
+      url: '/pages/fuel-overview/index'
+    });
+  },
+
   // 切换车辆
   onSwitchVehicle() {
     wx.navigateTo({
