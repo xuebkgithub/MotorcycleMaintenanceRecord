@@ -2,19 +2,34 @@
 // 个人设置、数据管理、车辆信息
 
 const storage = require('../../utils/storage');
+const importExport = require('../../utils/import-export');
 
 Page({
   data: {
-    vehicleInfo: {}
+    vehicleInfo: {},
+    showImportExportGuide: false,  // 引导对话框显示状态
+    preparedFileInfo: null         // 预生成文件信息
   },
 
   onLoad() {
     this.loadData();
+
+    // 检查是否首次使用导入导出功能
+    const hasSeenGuide = wx.getStorageSync('_import_export_guide_seen');
+    if (!hasSeenGuide) {
+      this.setData({ showImportExportGuide: true });
+    }
+
+    // 预生成导出文件
+    this.prepareCachedExportFile();
   },
 
   onShow() {
     // 每次显示时刷新车辆信息
     this.loadData();
+
+    // 检查缓存文件有效性
+    this.checkCachedFileValidity();
   },
 
   // 加载数据
@@ -23,22 +38,311 @@ Page({
     this.setData({ vehicleInfo });
   },
 
+  // 准备缓存的导出文件
+  async prepareCachedExportFile() {
+    try {
+      console.log('[Profile] 开始预生成导出文件...');
+      const fileInfo = await importExport.prepareExportFile();
+
+      if (fileInfo) {
+        this.setData({ preparedFileInfo: fileInfo });
+        console.log('[Profile] 预生成文件成功:', fileInfo.fileName);
+      } else {
+        console.log('[Profile] 暂无数据，跳过预生成');
+      }
+    } catch (err) {
+      console.error('[Profile] 预生成文件失败:', err);
+      // 预生成失败不影响页面正常使用
+    }
+  },
+
+  // 检查缓存文件有效性
+  async checkCachedFileValidity() {
+    try {
+      const currentData = storage.getAllData();
+      const currentChecksum = importExport.generateChecksum(currentData);
+
+      const cachedInfo = this.data.preparedFileInfo;
+
+      // 如果缓存文件存在且数据有变更，重新生成
+      if (cachedInfo && cachedInfo.dataChecksum !== currentChecksum) {
+        console.log('[Profile] 数据已变更，重新生成导出文件');
+        await this.prepareCachedExportFile();
+      }
+    } catch (err) {
+      console.error('[Profile] 检查缓存文件失败:', err);
+    }
+  },
+
+  // 快速导出（shareFileMessage）
+  onQuickExport() {
+    try {
+      // 1. 检查预生成文件（同步检查）
+      const fileInfo = this.data.preparedFileInfo;
+
+      if (!fileInfo || !fileInfo.filePath) {
+        wx.showModal({
+          title: '快速导出失败',
+          content: '导出文件未准备好，请稍后重试。\n\n错误码：QUICK_EXPORT_NO_FILE\n\n建议：请尝试使用"实时导出"功能',
+          showCancel: false,
+          confirmText: '知道了'
+        });
+        return;
+      }
+
+      // 2. 直接同步调用 shareFileMessage（必须在手势上下文中）
+      wx.shareFileMessage({
+        filePath: fileInfo.filePath,
+        fileName: fileInfo.fileName,
+        success: () => {
+          console.log('[Profile] 快速导出成功');
+          wx.showToast({
+            title: '文件已分享',
+            icon: 'success',
+            duration: 2000
+          });
+
+          // 分享成功后重新生成（为下次做准备）
+          this.prepareCachedExportFile();
+        },
+        fail: (err) => {
+          console.error('[Profile] shareFileMessage 失败:', err);
+
+          // 用户取消不提示
+          if (err.errMsg && err.errMsg.includes('cancel')) {
+            console.log('[Profile] 用户取消分享');
+            return;
+          }
+
+          // 显示详细错误
+          wx.showModal({
+            title: '快速导出失败',
+            content: `wx.shareFileMessage 调用失败\n\n原因：${err.errMsg}\n\n错误码：QUICK_EXPORT_API_FAIL\n\n建议：请尝试使用"实时导出"功能`,
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        }
+      });
+
+    } catch (err) {
+      console.error('[Profile] 快速导出异常:', err);
+      wx.showModal({
+        title: '快速导出失败',
+        content: err.message || '未知错误',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
+  },
+
+  // 实时导出（shareFileMessage，实时生成最新数据，使用同步写入）
+  onViewAndExport() {
+    try {
+      // 1. 收集所有数据（同步）
+      const storage = require('../../utils/storage');
+      const allData = storage.getAllData();
+
+      // 检查是否有数据
+      if (!allData.vehicles || allData.vehicles.length === 0) {
+        wx.showModal({
+          title: '提示',
+          content: '暂无数据可导出，请先添加车辆和记录',
+          showCancel: false,
+          confirmText: '知道了'
+        });
+        return;
+      }
+
+      // 2. 构造导出对象（同步）
+      const exportData = {
+        version: '1.0.0',
+        appName: '摩托车维护记录',
+        exportTime: new Date().toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }),
+        data: allData,
+        checksum: importExport.generateChecksum(allData)
+      };
+
+      // 3. 生成文件名（同步）
+      const dateStr = new Date().toLocaleDateString('zh-CN').replace(/\//g, '');
+      const fileName = `摩托车维护记录_${dateStr}.csv`;
+
+      // 4. 同步写入文件（关键：使用同步方法）
+      const file = require('../../utils/file');
+      const filePath = file.writeJSONFileSync(fileName, exportData);
+
+      console.log('[Profile] 实时导出文件已生成:', filePath);
+
+      // 5. 立即调用 shareFileMessage（仍在手势上下文中）
+      wx.shareFileMessage({
+        filePath,
+        fileName,
+        success: () => {
+          console.log('[Profile] 实时导出成功');
+          wx.showToast({
+            title: '文件已分享',
+            icon: 'success',
+            duration: 2000
+          });
+
+          // 导出成功后重新生成缓存文件（异步，不影响分享）
+          this.prepareCachedExportFile();
+        },
+        fail: (err) => {
+          console.error('[Profile] shareFileMessage 失败:', err);
+
+          // 用户取消不提示
+          if (err.errMsg && err.errMsg.includes('cancel')) {
+            console.log('[Profile] 用户取消分享');
+            return;
+          }
+
+          // 显示详细错误，提示文件已保存
+          wx.showModal({
+            title: '分享失败',
+            content: `wx.shareFileMessage 调用失败\n\n原因：${err.errMsg}\n\n错误码：VIEW_EXPORT_SHARE_FAIL\n\n文件已生成并保存：\n${fileName}`,
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        }
+      });
+
+    } catch (err) {
+      console.error('[Profile] 实时导出失败:', err);
+      wx.showModal({
+        title: '实时导出失败',
+        content: `文件生成失败\n\n原因：${err.message}\n\n错误码：VIEW_EXPORT_GENERATE_FAIL`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
+  },
+
   // 导入数据
-  onImportData() {
-    wx.showToast({
-      title: '导入功能开发中',
-      icon: 'none',
-      duration: 2000
+  async onImportData() {
+    try {
+      // 1. 选择文件
+      const fileInfo = await importExport.chooseImportFile();
+
+      // 2. 解析并验证文件
+      wx.showLoading({ title: '正在读取文件...' });
+      const importData = await importExport.parseImportFile(fileInfo.path);
+      wx.hideLoading();
+
+      // 3. 显示确认对话框
+      const confirmed = await this.showImportConfirmDialog(importData);
+      if (!confirmed) return;
+
+      // 4. 执行导入
+      wx.showLoading({ title: '正在导入数据...' });
+      const result = await importExport.importData(
+        fileInfo.path,
+        confirmed.mode
+      );
+      wx.hideLoading();
+
+      // 5. 提示成功并刷新页面
+      const stats = result.stats;
+      let message = `导入成功！\n\n`;
+      message += `• 车辆：${stats.vehicles} 辆\n`;
+      message += `• 保养记录：${stats.maintenanceRecords} 条\n`;
+      message += `• 加油记录：${stats.fuelRecords} 条`;
+
+      if (stats.mode === 'merge' && stats.conflicts > 0) {
+        message += `\n• 冲突覆盖：${stats.conflicts} 条`;
+      }
+
+      wx.showModal({
+        title: '导入成功',
+        content: message,
+        showCancel: false,
+        confirmText: '知道了',
+        success: () => {
+          // 刷新页面数据
+          this.loadData();
+          // 数据已变更，重新生成预生成文件
+          this.prepareCachedExportFile();
+        }
+      });
+
+    } catch (err) {
+      wx.hideLoading();
+
+      // 用户取消不提示
+      if (err.message === '已取消导入') {
+        return;
+      }
+
+      // 显示错误提示
+      wx.showModal({
+        title: '导入失败',
+        content: err.message || '未知错误，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
+  },
+
+  // 显示导入确认对话框
+  showImportConfirmDialog(importData) {
+    return new Promise((resolve) => {
+      const { vehicles, maintenanceRecords, fuelRecords } = importData.data;
+
+      wx.showModal({
+        title: '确认导入数据？',
+        content: `即将导入：\n• 车辆：${vehicles.length} 辆\n• 保养记录：${maintenanceRecords.length} 条\n• 加油记录：${fuelRecords.length} 条\n\n请选择导入模式：`,
+        confirmText: '覆盖导入',
+        cancelText: '合并导入',
+        confirmColor: '#FA5151',  // 覆盖模式使用警告色
+        success: (res) => {
+          if (res.confirm) {
+            // 用户点击"覆盖导入" - 再次确认
+            wx.showModal({
+              title: '⚠️ 覆盖模式确认',
+              content: '覆盖模式会清空现有数据，导入备份文件中的数据。\n\n此操作无法撤销，确认继续？',
+              confirmText: '确认覆盖',
+              cancelText: '取消',
+              confirmColor: '#FA5151',
+              success: (res2) => {
+                if (res2.confirm) {
+                  resolve({ mode: 'overwrite' });
+                } else {
+                  resolve(null); // 用户取消
+                }
+              }
+            });
+          } else if (res.cancel) {
+            // 用户点击"合并导入" - 说明合并规则
+            wx.showModal({
+              title: '合并模式确认',
+              content: '合并模式会保留现有数据，并添加导入的数据。ID 冲突时，导入数据将覆盖本地数据。\n\n确认继续？',
+              confirmText: '确认合并',
+              cancelText: '取消',
+              confirmColor: '#0052D9',  // 主题色
+              success: (res2) => {
+                if (res2.confirm) {
+                  resolve({ mode: 'merge' });
+                } else {
+                  resolve(null); // 用户取消
+                }
+              }
+            });
+          }
+        }
+      });
     });
   },
 
-  // 导出数据
-  onExportData() {
-    wx.showToast({
-      title: '导出功能开发中',
-      icon: 'none',
-      duration: 2000
-    });
+  // 引导确认
+  onGuideConfirm() {
+    this.setData({ showImportExportGuide: false });
+    wx.setStorageSync('_import_export_guide_seen', true);
   },
 
   // 车辆信息
@@ -56,5 +360,89 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     });
+  },
+
+  // 清空所有数据（第1次点击）
+  onClearAllData() {
+    wx.showModal({
+      title: '⚠️ 清空所有数据',
+      content: '将清空以下数据：\n\n• 所有车辆信息\n• 所有保养记录\n• 所有加油记录\n• 导入导出临时数据\n\n此操作无法撤销！',
+      confirmText: '继续',
+      cancelText: '取消',
+      confirmColor: '#FA5151',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户点击"继续"，进入第2次确认
+          this.onConfirmClearFirst();
+        }
+      }
+    });
+  },
+
+  // 第2次确认
+  onConfirmClearFirst() {
+    wx.showModal({
+      title: '🔴 最终确认',
+      content: '确定要清空所有数据吗？\n\n此操作无法恢复！',
+      confirmText: '确认清空',
+      cancelText: '取消',
+      confirmColor: '#FA5151',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户最终确认，执行清空
+          this.executeClearAll();
+        }
+      }
+    });
+  },
+
+  // 执行清空操作
+  async executeClearAll() {
+    try {
+      wx.showLoading({ title: '正在清空数据...' });
+
+      // 1. 清空本地存储数据
+      const storage = require('../../utils/storage');
+      const clearSuccess = storage.clearAllData();
+
+      if (!clearSuccess) {
+        throw new Error('清空本地数据失败');
+      }
+
+      // 2. 清除导出临时文件
+      const importExport = require('../../utils/import-export');
+      await importExport.clearPreparedFile();
+
+      // 3. 清除页面缓存数据
+      this.setData({
+        vehicleInfo: {},
+        preparedFileInfo: null
+      });
+
+      wx.hideLoading();
+
+      // 4. 显示成功提示
+      wx.showModal({
+        title: '清空成功',
+        content: '所有数据已清空',
+        showCancel: false,
+        confirmText: '知道了',
+        success: () => {
+          // 刷新页面数据
+          this.loadData();
+        }
+      });
+
+    } catch (err) {
+      wx.hideLoading();
+      console.error('[Profile] 清空数据失败:', err);
+
+      wx.showModal({
+        title: '清空失败',
+        content: err.message || '未知错误，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
   }
 });

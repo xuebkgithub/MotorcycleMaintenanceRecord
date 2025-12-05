@@ -69,16 +69,28 @@ function setFuelRecords(records) {
 // 清空所有数据
 function clearAllData() {
   try {
+    // 业务数据
     wx.removeStorageSync('vehicleInfo');
     wx.removeStorageSync('maintenanceRecords');
     wx.removeStorageSync('fuelRecords');
     wx.removeStorageSync('vehicles');
     wx.removeStorageSync('currentVehicleId');
-    wx.removeStorageSync('_migrated');
+
+    // 迁移相关 - 保留 _migrated 标记，防止重新创建默认车辆
+    // wx.removeStorageSync('_migrated');  // 注释掉，保留此标记
     wx.removeStorageSync('_backup_vehicleInfo');
+
+    // 导入导出相关
+    wx.removeStorageSync('_import_backup');
+    wx.removeStorageSync('_import_export_guide_seen');
+
+    // 清空后设置 _migrated 为 true，防止 app.js 重新执行迁移
+    wx.setStorageSync('_migrated', true);
+
+    console.log('[Storage] 所有数据已清空');
     return true;
   } catch (e) {
-    console.error('清空数据失败', e);
+    console.error('[Storage] 清空数据失败', e);
     return false;
   }
 }
@@ -273,6 +285,101 @@ function rollbackMigration() {
   }
 }
 
+// ========== 导入导出功能 ==========
+
+/**
+ * 获取所有数据（用于导出）
+ * @returns {object} 包含所有业务数据的对象
+ */
+function getAllData() {
+  try {
+    return {
+      vehicles: getVehicles(),
+      maintenanceRecords: getMaintenanceRecords(),
+      fuelRecords: getFuelRecords(),
+      currentVehicleId: getCurrentVehicleId()
+    };
+  } catch (e) {
+    console.error('[Storage] 获取所有数据失败', e);
+    return {
+      vehicles: [],
+      maintenanceRecords: [],
+      fuelRecords: [],
+      currentVehicleId: ''
+    };
+  }
+}
+
+/**
+ * 批量设置数据（用于导入）
+ * @param {object} data - 数据对象
+ * @param {string} mode - 模式 ('overwrite' | 'merge')，merge模式下已在调用前合并
+ * @returns {boolean} 是否成功
+ */
+function setAllData(data, mode = 'overwrite') {
+  try {
+    setVehicles(data.vehicles);
+    setMaintenanceRecords(data.maintenanceRecords);
+    setFuelRecords(data.fuelRecords);
+
+    // 覆盖模式：设置当前车辆ID
+    // 合并模式：保持本地的当前车辆ID（不覆盖）
+    if (mode === 'overwrite' && data.currentVehicleId) {
+      setCurrentVehicleId(data.currentVehicleId);
+    }
+
+    console.log('[Storage] 批量设置数据成功');
+    return true;
+  } catch (e) {
+    console.error('[Storage] 批量设置数据失败', e);
+    return false;
+  }
+}
+
+/**
+ * 备份当前数据（导入前）
+ * @returns {object} 备份对象
+ */
+function backupData() {
+  try {
+    const backup = {
+      timestamp: Date.now(),
+      data: getAllData()
+    };
+
+    wx.setStorageSync('_import_backup', backup);
+    console.log('[Storage] 数据备份成功，时间戳:', backup.timestamp);
+
+    return backup;
+  } catch (e) {
+    console.error('[Storage] 数据备份失败', e);
+    return null;
+  }
+}
+
+/**
+ * 恢复备份数据
+ * @returns {boolean} 是否成功
+ */
+function restoreBackup() {
+  try {
+    const backup = wx.getStorageSync('_import_backup');
+
+    if (!backup || !backup.data) {
+      console.warn('[Storage] 未找到备份数据');
+      return false;
+    }
+
+    setAllData(backup.data, 'overwrite');
+    console.log('[Storage] 备份恢复成功，备份时间:', new Date(backup.timestamp).toLocaleString('zh-CN'));
+
+    return true;
+  } catch (e) {
+    console.error('[Storage] 恢复备份失败', e);
+    return false;
+  }
+}
+
 module.exports = {
   getVehicleInfo,
   setVehicleInfo,
@@ -289,5 +396,10 @@ module.exports = {
   getCurrentVehicle,
   isMigrated,
   migrateToMultiVehicle,
-  rollbackMigration
+  rollbackMigration,
+  // 导入导出
+  getAllData,
+  setAllData,
+  backupData,
+  restoreBackup
 };

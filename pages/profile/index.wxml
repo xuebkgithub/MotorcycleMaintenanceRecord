@@ -10,25 +10,40 @@
 
   <!-- 功能菜单 -->
   <view class="menu-section">
-    <t-cell-group>
-      <!-- 数据管理 -->
+    <t-cell-group title="数据管理">
+      <!-- 快速导出 -->
+      <t-cell
+        title="快速导出"
+        note="使用最近数据快照（推荐）"
+        left-icon="share"
+        hover
+        bind:click="onQuickExport"
+      />
+
+      <!-- 实时导出 -->
+      <t-cell
+        title="实时导出"
+        note="生成最新数据后分享"
+        left-icon="file"
+        hover
+        bind:click="onViewAndExport"
+      />
+
+      <!-- 导入数据 -->
       <t-cell
         title="导入数据"
-        leftIcon="upload"
+        note="从备份文件恢复"
+        left-icon="download"
         hover
         bind:click="onImportData"
       />
-      <t-cell
-        title="导出数据"
-        leftIcon="download"
-        hover
-        bind:click="onExportData"
-      />
+    </t-cell-group>
 
+    <t-cell-group title="其他">
       <!-- 车辆管理 -->
       <t-cell
         title="车辆信息"
-        leftIcon="laptop"
+        left-icon="laptop"
         hover
         bind:click="onVehicleInfo"
       />
@@ -36,10 +51,30 @@
       <!-- 设置 -->
       <t-cell
         title="关于我们"
-        leftIcon="info-circle"
+        left-icon="info-circle"
         hover
         bind:click="onAbout"
       />
     </t-cell-group>
+
+    <!-- 危险操作分组 -->
+    <t-cell-group title="危险操作">
+      <t-cell
+        title="清空所有数据"
+        note="清空车辆、记录和临时数据"
+        left-icon="delete"
+        hover
+        bind:click="onClearAllData"
+      />
+    </t-cell-group>
   </view>
+
+  <!-- 使用引导对话框 -->
+  <t-dialog
+    visible="{{showImportExportGuide}}"
+    title="💡 导出方式说明"
+    content="【快速导出】\n点击即可直接分享到聊天，使用最近生成的数据快照，适合快速备份。\n\n【查看并导出】\n生成最新数据后打开查看，确认内容无误后手动分享，适合需要核对内容的场景。\n\n【导入数据】\n从备份文件恢复数据，支持覆盖和合并两种模式。"
+    confirm-btn="我知道了"
+    bind:confirm="onGuideConfirm"
+  />
 </view>

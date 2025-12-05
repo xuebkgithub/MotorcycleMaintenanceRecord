@@ -47,6 +47,12 @@
   overflow: hidden;
 }
 
+/* 危险操作按钮样式 */
+page t-cell-group:last-child t-cell {
+  --td-cell-title-color: var(--td-error-color-6);
+  --td-cell-left-icon-color: var(--td-error-color-6);
+}
+
 /* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
   .profile-page {

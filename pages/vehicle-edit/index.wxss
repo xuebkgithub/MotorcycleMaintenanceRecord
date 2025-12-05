@@ -8,6 +8,7 @@
 
 .form-section {
   padding: 32rpx 24rpx;
+  margin-top: 200rpx;
 }
 
 /* 按钮区域 */

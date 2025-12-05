@@ -8,6 +8,7 @@
 
 .vehicle-list {
   padding: 32rpx 24rpx;
+  margin-top: 200rpx;
 }
 
 /* 空状态 */
