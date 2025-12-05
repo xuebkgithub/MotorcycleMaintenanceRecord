@@ -60,11 +60,6 @@
     </view>
   </view>
 
-  <!-- 底部按钮区域 -->
-  <view class="bottom-buttons">
-    <t-button theme="light" size="large" bind:tap="onBack">返回</t-button>
-  </view>
-
   <!-- 悬浮按钮 -->
   <t-fab
     icon="add"

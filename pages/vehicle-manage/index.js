@@ -133,10 +133,5 @@ Page({
 
     // 刷新列表
     this.loadData();
-  },
-
-  // 返回
-  onBack() {
-    wx.navigateBack();
   }
 });
