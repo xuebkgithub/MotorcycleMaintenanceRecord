@@ -1,4 +1,4 @@
-/* 车辆管理页面样式 */
+/* 车辆管理页面样式 - 重构版本 */
 
 .vehicle-manage-page {
   min-height: 100vh;
@@ -8,7 +8,6 @@
 
 .vehicle-list {
   padding: 32rpx 24rpx;
-  margin-top: 200rpx;
 }
 
 /* 空状态 */
@@ -54,12 +53,43 @@
   color: #ffffff;
 }
 
-/* FAB 悬浮按钮 */
-t-fab {
+/* 自定义悬浮按钮（原生button） */
+.custom-fab-button {
   position: fixed;
   bottom: calc(120rpx + env(safe-area-inset-bottom));
   right: 32rpx;
-  z-index: 99;
+  z-index: 999;
+
+  /* 按钮尺寸 */
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+
+  /* 按钮样式 */
+  background: linear-gradient(135deg, #0052D9 0%, #0042B3 100%);
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(0, 82, 217, 0.4);
+
+  /* 内容居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  /* 动画过渡 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 按钮按下效果 */
+.custom-fab-button-hover {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 16rpx rgba(0, 82, 217, 0.5);
+  background: linear-gradient(135deg, #0042B3 0%, #003399 100%);
+}
+
+/* 清除button默认样式 */
+.custom-fab-button::after {
+  border: none;
 }
 
 /* 提示文本 */
@@ -78,9 +108,37 @@ t-fab {
   color: var(--td-text-color-placeholder);
 }
 
+/* 调试信息 */
+.debug-info {
+  position: fixed;
+  top: 100rpx;
+  left: 20rpx;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  z-index: 9999;
+}
+
+.debug-info text {
+  display: block;
+  margin: 4rpx 0;
+}
+
 /* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
   .vehicle-manage-page {
     background-color: var(--td-bg-color-page);
+  }
+
+  .custom-fab-button {
+    background: linear-gradient(135deg, #1E63E6 0%, #0052D9 100%);
+    box-shadow: 0 8rpx 24rpx rgba(30, 99, 230, 0.5);
+  }
+
+  .custom-fab-button-hover {
+    background: linear-gradient(135deg, #0052D9 0%, #0042B3 100%);
+    box-shadow: 0 4rpx 16rpx rgba(30, 99, 230, 0.6);
   }
 }

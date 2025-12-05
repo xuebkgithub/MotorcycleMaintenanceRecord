@@ -4,8 +4,6 @@
     "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell",
     "t-cell": "tdesign-miniprogram/cell/cell",
     "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
-    "t-icon": "tdesign-miniprogram/icon/icon",
-    "t-fab": "tdesign-miniprogram/fab/fab",
-    "t-button": "tdesign-miniprogram/button/button"
+    "t-icon": "tdesign-miniprogram/icon/icon"
   }
 }
