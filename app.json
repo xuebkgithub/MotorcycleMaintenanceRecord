@@ -15,18 +15,10 @@
   ],
   "themeLocation": "theme.json",
   "usingComponents": {
-    "t-demo": "./components/demo-block/index",
-    "t-demo-header": "./components/demo-header/index",
     "t-button": "tdesign-miniprogram/button/button",
     "t-icon": "tdesign-miniprogram/icon/icon",
-    "t-navbar": "tdesign-miniprogram/navbar/navbar",
-    "t-grid": "tdesign-miniprogram/grid/grid",
-    "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
-    "t-tabs": "tdesign-miniprogram/tabs/tabs",
-    "t-tab-panel": "tdesign-miniprogram/tab-panel/tab-panel",
     "t-cell": "tdesign-miniprogram/cell/cell",
-    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
-    "t-image": "tdesign-miniprogram/image/image"
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group"
   },
   "window": {
     "navigationBarTitleText": "TDesign",
