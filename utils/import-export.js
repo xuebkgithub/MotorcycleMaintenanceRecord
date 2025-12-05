@@ -5,6 +5,8 @@
 
 const file = require('./file');
 const storage = require('./storage');
+const csvParser = require('./csv-parser');
+const csvValidator = require('./csv-validator');
 
 // 当前数据格式版本
 const CURRENT_VERSION = '1.0.0';
@@ -579,6 +581,207 @@ function generateChecksum(data) {
   }
 }
 
+// ========== CSV导入导出相关方法 ==========
+
+/**
+ * 选择CSV文件
+ * @returns {Promise<{path, size, name}>}
+ */
+async function chooseCSVFile() {
+  try {
+    const fileInfo = await file.chooseFile(['csv']);
+    console.log('[导入导出] 已选择CSV文件:', fileInfo.name);
+    return fileInfo;
+  } catch (err) {
+    if (err.message === 'USER_CANCEL') {
+      throw new Error('已取消导入');
+    }
+    throw err;
+  }
+}
+
+/**
+ * 解析CSV文件
+ * @param {string} filePath - CSV文件路径
+ * @returns {Promise<Array<Object>>} CSV数据数组（原始格式，未映射）
+ */
+async function parseCSVFile(filePath) {
+  try {
+    console.log('[导入导出] 开始解析CSV文件:', filePath);
+
+    // 1. 读取文件内容
+    const csvText = await file.readTextFile(filePath);
+    console.log('[导入导出] CSV文件读取成功，长度:', csvText.length, '字符');
+
+    // 2. 使用Papa Parse解析（阶段7实现）
+    // TODO: 当前parseCSV返回空数组，需在阶段7实现
+    const csvData = await csvParser.parseCSV(csvText);
+    console.log('[导入导出] CSV解析成功，共', csvData.length, '行');
+
+    // 3. 验证列名
+    const requiredColumns = [
+      '日期', '公里数', '油费', '单价', '油量',
+      '实际付金额', '优惠金额', '实付单价',
+      '是否加满', '是否亮灯', '上次记录了吗'
+    ];
+
+    if (csvData.length === 0) {
+      // TODO: 阶段7之前会触发此错误
+      throw new Error('CSV文件为空或格式错误（parseCSV方法待实现，将在阶段7引入Papa Parse）');
+    }
+
+    const actualColumns = Object.keys(csvData[0]);
+    const missingColumns = requiredColumns.filter(c => !actualColumns.includes(c));
+
+    if (missingColumns.length > 0) {
+      throw new Error(`CSV文件缺少必需列：${missingColumns.join('、')}`);
+    }
+
+    console.log('[导入导出] CSV列名验证通过');
+    return csvData;
+
+  } catch (err) {
+    console.error('[导入导出] CSV解析失败:', err);
+    throw err;
+  }
+}
+
+/**
+ * 导入CSV数据
+ * @param {Array} csvData - CSV原始数据（未映射）
+ * @param {Object} options - 导入选项
+ * @param {string} options.vehicleId - 车辆ID
+ * @param {Array<string>} options.fuelTypes - 每条记录的油品类型数组
+ * @returns {Promise<{success: boolean, stats: Object, errors: Array, duplicates: Array}>}
+ */
+async function importCSVData(csvData, options) {
+  try {
+    console.log('[导入导出] 开始导入CSV数据，共', csvData.length, '行');
+    console.log('[导入导出] 导入选项:', options);
+
+    // 1. 备份当前数据
+    storage.backupData();
+    console.log('[导入导出] 已备份当前数据');
+
+    // 2. 映射CSV数据为油耗记录
+    const mappedRecords = csvData.map((row, index) => {
+      try {
+        return csvParser.mapCSVToFuelRecord(
+          row,
+          options.vehicleId,
+          options.fuelTypes[index]  // 每条记录独立的油品类型
+        );
+      } catch (err) {
+        console.error(`[导入导出] 第${index + 2}行映射失败:`, err);
+        // 返回错误标记
+        return {
+          _error: err.message,
+          _rowIndex: index + 2,
+          ...row
+        };
+      }
+    });
+
+    // 分离成功和失败的记录
+    const successRecords = mappedRecords.filter(r => !r._error);
+    const mappingErrors = mappedRecords.filter(r => r._error).map(r => ({
+      row: r._rowIndex,
+      field: '数据映射',
+      message: r._error
+    }));
+
+    console.log('[导入导出] 映射完成：成功', successRecords.length, '条，失败', mappingErrors.length, '条');
+
+    // 3. 校验数据
+    const validationResults = csvValidator.validateAllRecords(successRecords);
+    const allErrors = [...mappingErrors, ...validationResults.errors];
+
+    console.log('[导入导出] 校验完成：有效记录', validationResults.validRecords.length, '条，错误', allErrors.length, '条');
+
+    // 4. 检测重复数据
+    const existingRecords = storage.getFuelRecords().filter(
+      r => r.vehicleId === options.vehicleId
+    );
+    const { duplicates, safeRecords } = csvValidator.detectDuplicates(
+      validationResults.validRecords,
+      existingRecords
+    );
+
+    console.log('[导入导出] 重复检测完成：重复', duplicates.length, '条，可导入', safeRecords.length, '条');
+
+    // 5. 合并数据（跳过重复记录）
+    const allRecords = storage.getFuelRecords();
+    const recordsToImport = safeRecords;
+
+    // 合并并按时间排序
+    const mergedRecords = [...allRecords, ...recordsToImport].sort((a, b) => {
+      return new Date(a.time || a.date) - new Date(b.time || b.date);
+    });
+
+    // 6. 重新计算油耗（导入的记录）
+    const calculator = require('./calculator');
+    recordsToImport.forEach(record => {
+      try {
+        record.fuelConsumption = calculator.calculateSingleFuelConsumption(
+          record,
+          mergedRecords
+        );
+        console.log(`[导入导出] 记录 ${record.time} 油耗计算：${record.fuelConsumption}L/100km`);
+      } catch (err) {
+        console.error(`[导入导出] 记录 ${record.time} 油耗计算失败:`, err);
+        record.fuelConsumption = 0;
+      }
+    });
+
+    // 7. 保存数据
+    storage.setFuelRecords(mergedRecords);
+    console.log('[导入导出] 数据已保存，总记录数', mergedRecords.length);
+
+    // 8. 验证导入结果
+    const verifyRecords = storage.getFuelRecords();
+    if (verifyRecords.length !== mergedRecords.length) {
+      throw new Error('导入后数据验证失败：记录数不匹配');
+    }
+
+    // 9. 生成报告
+    const report = {
+      success: true,
+      stats: {
+        total: csvData.length,
+        imported: recordsToImport.length,
+        skippedErrors: allErrors.length,
+        skippedDuplicates: duplicates.length
+      },
+      errors: allErrors,
+      duplicates: duplicates.map(d => ({
+        row: d.row,
+        reason: d.reason,
+        csvData: {
+          date: d.csvRecord.time.split(' ')[0],
+          mileage: d.csvRecord.totalMileage,
+          cost: d.csvRecord.displayAmount
+        }
+      }))
+    };
+
+    console.log('[导入导出] CSV导入成功:', report.stats);
+    return report;
+
+  } catch (err) {
+    console.error('[导入导出] CSV导入失败，开始回滚:', err);
+
+    // 自动回滚
+    const rollbackSuccess = storage.restoreBackup();
+    if (rollbackSuccess) {
+      console.log('[导入导出] 已回滚到导入前状态');
+      throw new Error(`导入失败，数据已恢复：${err.message}`);
+    } else {
+      console.error('[导入导出] 回滚失败，数据可能损坏');
+      throw new Error('导入失败且回滚失败，请联系开发者');
+    }
+  }
+}
+
 module.exports = {
   exportAllData,
   prepareExportFile,      // 新增：预生成导出文件
@@ -591,5 +794,9 @@ module.exports = {
   importData,
   validateImportData,
   mergeData,
-  generateChecksum
+  generateChecksum,
+  // CSV导入导出方法
+  chooseCSVFile,          // 新增：选择CSV文件
+  parseCSVFile,           // 新增：解析CSV文件
+  importCSVData           // 新增：导入CSV数据
 };

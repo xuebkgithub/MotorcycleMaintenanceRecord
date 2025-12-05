@@ -262,10 +262,35 @@ function deleteFile(filePath) {
   });
 }
 
+/**
+ * 读取文本文件（用于CSV导入）
+ * @param {string} filePath - 文件路径
+ * @returns {Promise<string>} 文件内容（UTF-8编码）
+ */
+function readTextFile(filePath) {
+  return new Promise((resolve, reject) => {
+    const fs = wx.getFileSystemManager();
+
+    fs.readFile({
+      filePath,
+      encoding: 'utf8',
+      success: (res) => {
+        console.log('[文件工具] 文本文件读取成功:', filePath, '，长度:', res.data.length, '字符');
+        resolve(res.data);
+      },
+      fail: (err) => {
+        console.error('[文件工具] 文本文件读取失败:', err);
+        reject(new Error('文件读取失败，请确认文件格式是否为UTF-8编码'));
+      }
+    });
+  });
+}
+
 module.exports = {
   writeJSONFile,
   writeJSONFileSync,  // 新增：同步写入
   readJSONFile,
+  readTextFile,       // 新增：读取文本文件
   shareFile,
   chooseFile,
   getFileInfo,
