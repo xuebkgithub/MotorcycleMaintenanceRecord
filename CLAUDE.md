@@ -1,23 +1,24 @@
-# 摩托车维护记录 - 项目架构文档
+# 摩托车维护记录 - 项目架构文档（更新版）
 
-> 生成时间：2025-12-01 18:00:48
-> 项目类型：微信小程序
-> UI 框架：TDesign MiniProgram
+> **最后更新：** 2025-12-02 18:00:00
+> **项目状态：** 业务应用（已从TDesign演示项目转型）
+> **项目类型：** 微信小程序 - 摩托车维护记录管理系统
+> **UI 框架：** TDesign MiniProgram
 
 ---
 
 ## 📋 项目概述
 
-本项目是一个基于**微信小程序**的摩托车维护记录应用，使用腾讯 **TDesign MiniProgram** 组件库构建。项目展示了 TDesign 组件库的各种 UI 组件及其用法示例。
+本项目是一个功能完整的**摩托车维护记录管理应用**，基于微信小程序和腾讯 TDesign MiniProgram 组件库构建。项目已经从最初的TDesign组件演示成功转型为实际的业务应用。
 
-### 核心特性
+### 核心业务功能
 
-- ✅ 完整的 TDesign UI 组件库集成
-- ✅ 支持 Skyline 渲染引擎
-- ✅ 支持深色模式（darkmode）
-- ✅ 分包加载优化
-- ✅ 懒加载支持
-- ✅ TypeScript 类型定义支持
+- ✅ **车辆管理** - 车辆信息的添加、编辑、选择
+- ✅ **保养记录** - 摩托车保养记录的增删改查
+- ✅ **油耗记录** - 油耗数据的记录和分析
+- ✅ **数据统计** - 提供保养和油耗的数据概览
+- ✅ **导入导出** - 支持CSV格式的数据导入导出
+- ✅ **个人中心** - 用户配置和数据管理
 
 ### 技术栈
 
@@ -27,6 +28,7 @@
 - **开发语言**：JavaScript + TypeScript 类型定义
 - **样式方案**：WXSS（微信小程序样式）
 - **构建工具**：微信开发者工具
+- **数据存储**：微信小程序本地存储 + CSV文件处理
 
 ---
 
@@ -34,117 +36,151 @@
 
 ```mermaid
 graph TB
-    A[根目录] --> B[app.js/json/wxss]
-    A --> C[pages/]
-    A --> D[components/]
-    A --> E[miniprogram_npm/]
-    A --> F[utils/]
-    A --> G[assets/]
-    A --> H[behaviors/]
-    A --> I[demos/]
+    A[根目录] --> B[app.js/json/wxss/d.ts]
+    A --> C[pages/ - 13个业务页面]
+    A --> D[components/ - 10个自定义组件]
+    A --> E[miniprogram_npm/ - TDesign组件库]
+    A --> F[utils/ - 12个工具模块]
+    A --> G[assets/ - 静态资源]
+    A --> H[behaviors/ - Skyline支持]
+    A --> I[backup/ - 清理备份]
 
     B --> B1[应用入口配置]
-    C --> C1[62+ 页面模块]
-    C --> C2[主包页面]
-    C --> C3[分包页面]
+    C --> C1[首页仪表板]
+    C --> C2[保养管理模块]
+    C --> C3[油耗管理模块]
+    C --> C4[车辆管理模块]
+    C --> C5[个人中心模块]
+    C --> C6[CSV导入预览]
 
-    D --> D1[demo-header]
-    D --> D2[demo-block]
-    D --> D3[pull-down-list]
-    D --> D4[trd-privacy]
+    D --> D1[stat-card - 统计卡片]
+    D --> D2[maintenance-item - 保养项目]
+    D --> D3[fuel-item - 油耗项目]
+    D --> D4[list-stats - 列表统计]
+    D --> D5[action-selector - 操作选择器]
+    D --> D6[green-radio-group - 绿色单选组]
+    D --> D7[pull-down-list - 下拉列表]
+    D --> D8[trd-privacy - 隐私协议]
 
-    E --> E1[tdesign-miniprogram]
-    E1 --> E2[50+ UI组件]
+    F --> F1[storage.js - 本地存储]
+    F --> F2[csv-parser.js - CSV解析]
+    F --> F3[csv-exporter.js - CSV导出]
+    F --> F4[import-export.js - 导入导出逻辑]
+    F --> F5[csv-validator.js - CSV验证]
+    F --> F6[calculator.js - 计算工具]
+    F --> F7[migrate-fuel-consumption.js - 油耗迁移]
+    F --> F8[form-validator.js - 表单验证]
+    F --> F9[mock-data.js - 模拟数据]
+    F --> F10[gulpError.js - 错误处理]
+    F --> F11[file.js - 文件操作]
 
-    F --> F1[gulpError.js]
+    G --> G1[tabbar图标集]
+    G --> G2[TDesign Logo]
 
-    G --> G1[图标资源]
-
-    H --> H1[skyline.js]
-
-    I --> I1[组件示例]
-
-    C2 --> P1[home 首页]
-    C2 --> P2[button 按钮]
-    C2 --> P3[tabs 标签页]
-    C2 --> P4[input 输入框]
-    C2 --> P5[... 更多组件页]
-
-    C3 --> S1[side-bar 侧边栏]
-    C3 --> S2[action-sheet 动作面板]
-    C3 --> S3[avatar 头像]
-    C3 --> S4[calendar 日历]
-    C3 --> S5[dialog 对话框]
-    C3 --> S6[picker 选择器]
-    C3 --> S7[... 更多分包页]
+    I --> I1[清理备份报告]
+    I --> I2[未使用页面备份]
 
     style A fill:#e1f5fe
     style C fill:#fff3e0
     style D fill:#f3e5f5
-    style E fill:#e8f5e9
+    style F fill:#e8f5e9
 ```
 
 ---
 
-## 📁 目录结构详解
+## 📁 实际目录结构
 
 ```
 MotorcycleMaintenanceRecord/
-├── app.js                      # 小程序入口逻辑
-├── app.json                    # 小程序全局配置（页面路由、分包、组件等）
+├── app.js                      # 应用入口逻辑（包含启动逻辑和数据迁移）
+├── app.json                    # 精简配置（13个业务页面）
 ├── app.wxss                    # 全局样式
 ├── app.d.ts                    # TypeScript 类型定义
+├── project.config.json         # 微信开发者工具配置
+├── sitemap.json               # 小程序站点地图
+├── theme.json                 # 主题配置
 │
-├── pages/                      # 页面目录（62+ 页面）
-│   ├── home/                   # 首页（组件列表）
-│   ├── button/                 # 按钮组件示例
-│   ├── tabs/                   # 标签页组件示例
-│   ├── input/                  # 输入框组件示例
-│   ├── [...]                   # 其他 50+ 组件示例页面
-│   └── [subpackages]/          # 分包页面（side-bar、action-sheet等）
+├── pages/                      # 业务页面目录（13个页面）
+│   ├── index/                 # 🔹 首页仪表板
+│   ├── maintenance-list/      # 🔹 保养记录列表
+│   ├── fuel-list/             # 🔹 油耗记录列表
+│   ├── fuel-overview/         # 🔹 油耗数据概览
+│   ├── profile/               # 🔹 个人中心
+│   ├── vehicle-select/        # 🔹 车辆选择
+│   ├── vehicle-manage/        # 🔹 车辆管理
+│   ├── vehicle-edit/          # 🔹 车辆编辑
+│   ├── maintenance-detail/    # 🔹 保养详情
+│   ├── fuel-detail/           # 🔹 油耗详情
+│   ├── maintenance-add/       # 🔹 新增保养
+│   ├── fuel-add/              # 🔹 新增油耗
+│   └── csv-import-preview/    # 🔹 CSV导入预览
 │
-├── components/                 # 自定义组件
-│   ├── demo-header/            # Demo 页面头部组件
-│   ├── demo-block/             # Demo 页面块组件
-│   ├── pull-down-list/         # 下拉列表组件
-│   └── trd-privacy/            # 隐私协议组件
+├── components/                 # 自定义组件（10个）
+│   ├── demo-header/           # 页面头部组件（遗留）
+│   ├── demo-block/            # 内容块组件（遗留）
+│   ├── pull-down-list/        # 下拉列表组件
+│   ├── trd-privacy/           # 隐私协议组件
+│   ├── stat-card/             # ✅ 新增：统计卡片组件
+│   ├── maintenance-item/      # ✅ 新增：保养项目组件
+│   ├── fuel-item/             # ✅ 新增：油耗项目组件
+│   ├── list-stats/            # ✅ 新增：列表统计组件
+│   ├── action-selector/       # ✅ 新增：操作选择器组件
+│   └── green-radio-group/     # ✅ 新增：绿色单选按钮组
 │
 ├── miniprogram_npm/            # npm 构建产物
-│   └── tdesign-miniprogram/    # TDesign 组件库
-│       ├── button/
-│       ├── tabs/
-│       ├── input/
-│       └── [50+ 组件]
+│   └── tdesign-miniprogram/    # TDesign 组件库（53个组件）
+│       ├── button/            # 按钮组件
+│       ├── cell/              # 单元格组件
+│       ├── cell-group/        # 单元格组组件
+│       ├── icon/              # 图标组件
+│       └── [49个其他组件]     # 其他TDesign组件
 │
-├── demos/                      # 组件 Demo 示例
-│   └── radio/                  # Radio 组件示例
+├── utils/                      # 工具函数模块（12个）
+│   ├── storage.js              # ✅ 本地存储管理
+│   ├── csv-parser.js           # ✅ CSV解析器
+│   ├── csv-exporter.js         # ✅ CSV导出器
+│   ├── import-export.js        # ✅ 导入导出业务逻辑
+│   ├── csv-validator.js        # ✅ CSV验证器
+│   ├── calculator.js           # ✅ 计算工具
+│   ├── migrate-fuel-consumption.js # ✅ 油耗数据迁移
+│   ├── form-validator.js       # ✅ 表单验证
+│   ├── mock-data.js            # ✅ 模拟数据
+│   ├── gulpError.js            # Gulp错误处理
+│   ├── file.js                 # 文件操作工具
+│   └── [其他工具函数]
 │
 ├── behaviors/                  # 小程序行为
 │   └── skyline.js              # Skyline 渲染引擎行为
 │
-├── utils/                      # 工具函数
-│   └── gulpError.js            # Gulp 错误处理工具
-│
 ├── assets/                     # 静态资源
-│   ├── TDesign-logo_light.png  # 亮色主题 Logo
-│   └── TDesign-logo_dark.png   # 深色主题 Logo
+│   ├── tabbar/                 # ✅ 新增：自定义标签栏图标（8个）
+│   │   ├── home.png
+│   │   ├── home-active.png
+│   │   ├── maintenance.png
+│   │   ├── maintenance-active.png
+│   │   ├── fuel.png
+│   │   ├── fuel-active.png
+│   │   ├── profile.png
+│   │   └── profile-active.png
+│   ├── TDesign-logo_light.png  # TDesign Logo（亮色）
+│   └── TDesign-logo_dark.png   # TDesign Logo（深色）
 │
-├── project.config.json         # 微信开发者工具配置
-├── project.private.config.json # 私有配置
-├── sitemap.json               # 小程序站点地图
-├── theme.json                 # 主题配置
+├── backup/                     # 🔹 清理备份目录
+│   ├── unused-pages/           # 备份的63个TDesign示例页面（6.1MB）
+│   └── 清理报告.md             # 详细的清理报告文档
 │
-└── .claude/                   # AI 上下文文档目录
+└── .claude/                    # AI 上下文文档目录
     ├── CLAUDE.md              # 本文档
     ├── operations-log.md      # 操作日志
-    └── context-summary-*.md   # 上下文摘要
+    ├── context-summary-*.md   # 上下文摘要
+    └── plan/                  # 计划文件
+        ├── 页面清理计划.md
+        └── 未使用页面清单.txt
 ```
 
 ---
 
 ## 📦 模块索引
-
-本项目包含以下主要模块：
 
 ### 1. **应用核心（根目录）**
 - **入口文件**：`app.js`, `app.json`, `app.wxss`
@@ -153,63 +189,80 @@ MotorcycleMaintenanceRecord/
   - 自定义导航栏（navigationStyle: custom）
   - Skyline 渲染引擎支持
   - 懒加载优化（lazyCodeLoading: requiredComponents）
-- **详细文档**：无（根目录配置文件自解释）
+- **页面配置**：13个业务页面（详见下文）
 
-### 2. **页面模块（pages/）**
-- **页面数量**：62+ 个页面
-- **主要页面**：
-  - `home/home` - 首页（组件列表）
-  - `button/` - 按钮组件示例
-  - `tabs/` - 标签页组件示例
-  - `input/` - 输入框组件示例
-  - [更多组件页面...]
-- **分包页面**：
-  - `side-bar/` - 侧边栏
-  - `action-sheet/` - 动作面板
-  - `avatar/` - 头像
-  - `calendar/` - 日历
-  - `dialog/` - 对话框
-  - `picker/` - 选择器
-  - `rate/` - 评分
-  - `swiper/` - 轮播
-  - `swipe-cell/` - 滑动单元格
-  - `tree-select/` - 树形选择
-  - `indexes/` - 索引列表
-- **详细文档**：[pages/CLAUDE.md](pages/CLAUDE.md)
+### 2. **业务页面模块（pages/）** - **13个业务页面**
 
-### 3. **自定义组件（components/）**
-- **组件列表**：
-  - `demo-header/` - Demo 页面头部
-  - `demo-block/` - Demo 页面块
-  - `pull-down-list/` - 下拉列表
-  - `trd-privacy/` - 隐私协议
-- **详细文档**：[components/CLAUDE.md](components/CLAUDE.md)
+#### 🔹 首页模块
+- `index/index` - 首页仪表板（车辆概览、最近记录）
 
-### 4. **TDesign 组件库（miniprogram_npm/tdesign-miniprogram/）**
+#### 🔹 保养管理模块
+- `maintenance-list/index` - 保养记录列表
+- `maintenance-detail/index` - 保养详情查看
+- `maintenance-add/index` - 新增保养记录
+
+#### 🔹 油耗管理模块
+- `fuel-list/index` - 油耗记录列表
+- `fuel-overview/index` - 油耗数据概览分析
+- `fuel-detail/index` - 油耗详情查看
+- `fuel-add/index` - 新增油耗记录
+
+#### 🔹 车辆管理模块
+- `vehicle-select/index` - 车辆选择
+- `vehicle-manage/index` - 车辆管理
+- `vehicle-edit/index` - 车辆信息编辑
+
+#### 🔹 个人中心模块
+- `profile/index` - 个人中心和设置
+
+#### 🔹 数据导入模块
+- `csv-import-preview/index` - CSV导入预览
+
+### 3. **自定义组件（components/）** - **10个组件**
+
+#### ✅ 业务组件（6个新增）
+- `stat-card/` - 统计卡片（用于首页数据展示）
+- `maintenance-item/` - 保养项目列表项
+- `fuel-item/` - 油耗项目列表项
+- `list-stats/` - 列表统计数据展示
+- `action-selector/` - 操作选择器
+- `green-radio-group/` - 绿色主题单选按钮组
+
+#### 🔹 基础组件（4个）
+- `pull-down-list/` - 下拉列表
+- `trd-privacy/` - 隐私协议
+- `demo-header/` - 页面头部（可能不再使用）
+- `demo-block/` - 内容块组件（可能不再使用）
+
+### 4. **工具模块（utils/）** - **12个工具**
+
+#### ✅ 核心业务工具（9个新增）
+- `storage.js` - 本地存储封装（车辆、保养、油耗数据）
+- `csv-parser.js` - CSV文件解析
+- `csv-exporter.js` - CSV文件导出
+- `import-export.js` - 导入导出业务逻辑
+- `csv-validator.js` - CSV数据验证
+- `calculator.js` - 计算工具（油耗计算等）
+- `migrate-fuel-consumption.js` - 油耗数据迁移
+- `form-validator.js` - 表单验证
+- `mock-data.js` - 模拟数据生成
+
+#### 🔹 基础工具（3个）
+- `gulpError.js` - Gulp错误处理
+- `file.js` - 文件操作工具
+
+### 5. **TDesign 组件库（miniprogram_npm/）**
 - **来源**：npm 包 `tdesign-miniprogram`
-- **组件数量**：50+ 个 UI 组件
-- **主要组件**：
-  - 基础：Button, Icon, Cell, Image, Layout
-  - 表单：Input, Textarea, Radio, Checkbox, Switch, Slider, Stepper, Upload, Picker, DateTimePicker, Cascader, ColorPicker
-  - 导航：Tabs, TabBar, Navbar, SideBar, Steps, Indexes
-  - 反馈：Toast, Message, Dialog, ActionSheet, Drawer, Popup, Overlay, Loading, Progress, Skeleton
-  - 展示：Badge, Tag, Avatar, Divider, Empty, Footer, Grid, Swiper, ImageViewer, CountDown, Rate, Guide
-  - 其他：BackTop, NoticeBar, PullDownRefresh, Search, Sticky, Transition, TreeSelect
-- **详细文档**：查阅 [TDesign MiniProgram 官方文档](https://tdesign.tencent.com/miniprogram/overview)
+- **组件数量**：53个 UI 组件
+- **使用方式**：按需在页面json中注册使用
 
-### 5. **工具模块（utils/）**
-- **文件**：`gulpError.js`
-- **功能**：Gulp 构建错误检测与跳转
+### 6. **静态资源（assets/）**
+- **tabbar图标**：8个自定义标签栏图标
+- **Logo图片**：TDesign Logo（亮色/深色）
 
-### 6. **行为模块（behaviors/）**
-- **文件**：`skyline.js`
-- **功能**：Skyline 渲染引擎行为定义
-
-### 7. **Demo 示例（demos/）**
-- **示例**：`radio/` - Radio 组件各种用法示例
-
-### 8. **静态资源（assets/）**
-- **文件**：Logo 图片（亮色/深色主题）
+### 7. **备份目录（backup/）**
+- **清理报告**：`清理报告.md`（详细记录清理过程）
+- **页面备份**：`unused-pages/`（63个TDesign示例页面备份）
 
 ---
 
@@ -226,160 +279,122 @@ MotorcycleMaintenanceRecord/
   - 大包体积支持：已启用
   - 代码压缩：已启用（WXSS + WXML）
 
-### 2. **编码规范**
-- **缩进**：2 空格（自动）
+### 2. **页面配置（app.json）**
+```json
+{
+  "pages": [
+    "pages/index/index",           # 首页
+    "pages/maintenance-list/index", # 保养列表
+    "pages/fuel-list/index",       # 油耗列表
+    "pages/profile/index",         # 个人中心
+    "pages/vehicle-select/index",  # 车辆选择
+    "pages/vehicle-manage/index",  # 车辆管理
+    "pages/vehicle-edit/index",    # 车辆编辑
+    "pages/maintenance-detail/index", # 保养详情
+    "pages/fuel-detail/index",     # 油耗详情
+    "pages/fuel-overview/index",   # 油耗概览
+    "pages/maintenance-add/index", # 新增保养
+    "pages/fuel-add/index",        # 新增油耗
+    "pages/csv-import-preview/index" # CSV导入预览
+  ]
+}
+```
+
+### 3. **编码规范**
+- **缩进**：2 空格
 - **命名约定**：
-  - 文件名：kebab-case（如 `pull-down-list`）
-  - 组件名：PascalCase（如 `DemoHeader`）
+  - 文件名：kebab-case（如 `maintenance-item`）
+  - 组件名：PascalCase（如 `MaintenanceItem`）
   - 页面路径：与文件名一致
 - **代码风格**：
   - 使用 ES6+ 语法
   - 页面使用 `Page()` 构造器
   - 组件使用 `Component()` 构造器
-  - 优先使用 TDesign 组件，避免重复造轮子
-
-### 3. **渲染模式**
-本项目支持两种渲染模式：
-- **Webview 模式**（默认）：传统小程序渲染
-- **Skyline 模式**：新一代高性能渲染引擎
-  - 通过 URL 参数 `?skyline=1` 切换
-  - 相关页面位于 `pages/*/skyline/` 子目录
-
-### 4. **分包策略**
-- **主包**：核心页面（home、button、tabs、input 等）
-- **分包**：
-  - `pages/side-bar/` - 侧边栏相关
-  - `pages/action-sheet/` - 动作面板
-  - `pages/avatar/` - 头像
-  - `pages/calendar/` - 日历
-  - `pages/dialog/` - 对话框
-  - `pages/picker/` - 选择器
-  - `pages/rate/` - 评分
-  - `pages/swiper/` - 轮播
-  - `pages/swipe-cell/` - 滑动单元格
-  - `pages/tree-select/` - 树形选择
-  - `pages/indexes/` - 索引列表
-
-### 5. **全局组件注册（app.json）**
-```json
-{
-  "usingComponents": {
-    "t-demo": "./components/demo-block/index",
-    "t-demo-header": "./components/demo-header/index",
-    "t-button": "tdesign-miniprogram/button/button",
-    "t-icon": "tdesign-miniprogram/icon/icon",
-    "t-navbar": "tdesign-miniprogram/navbar/navbar"
-  }
-}
-```
+  - 优先使用 TDesign 组件
 
 ---
 
-## 🔍 关键入口与流程
+## 🔍 关键业务功能
 
-### 应用启动流程
-1. **入口**：`app.js` - `onShow()` 钩子
-2. **错误检测**：检查 `gulpError` 是否为占位符
-3. **路由跳转**：
-   - 如果有 Gulp 错误 → 跳转到 `/pages/gulp-error/index`
-   - 否则 → 正常启动，显示首页
+### 1. **车辆管理**
+- 支持多车辆管理
+- 车辆信息的增删改查
+- 车辆选择器组件
 
-### 首页导航流程
-1. **入口**：`pages/home/home`
-2. **加载逻辑**：
-   - 检测是否为 Skyline 模式（`options.skyline`）
-   - 加载对应的组件列表（`list` 或 `skylineList`）
-3. **点击组件**：
-   - 解析组件名称 → 转换为 kebab-case
-   - 构造页面路径 → 跳转到对应组件示例页
-   - 失败处理 → 跳转到导航失败页
+### 2. **保养记录**
+- 保养项目的完整CRUD
+- 保养提醒功能
+- 保养统计和分析
 
----
+### 3. **油耗记录**
+- 油耗数据的记录和计算
+- 油耗趋势分析
+- 油耗数据迁移工具
 
-## 📊 数据与依赖关系
+### 4. **数据导入导出**
+- CSV格式数据导入
+- CSV格式数据导出
+- 数据验证和预览
 
-### 核心依赖
-- **TDesign MiniProgram**：`miniprogram_npm/tdesign-miniprogram/`
-  - 版本：通过 npm 管理（需查看 package.json）
-  - 文档：https://tdesign.tencent.com/miniprogram/overview
-
-### 外部资源
-- 无外部 API 依赖（纯前端展示项目）
-
-### 数据流向
-```
-app.js (入口)
-  ↓
-pages/home/home (首页)
-  ↓ (点击组件)
-pages/[component]/[component] (组件示例页)
-  ↓ (使用组件)
-miniprogram_npm/tdesign-miniprogram/[component] (TDesign 组件)
-```
+### 5. **统计和分析**
+- 首页数据仪表板
+- 列表统计数据展示
+- 油耗概览分析
 
 ---
 
-## 🧪 测试与验证
+## 📊 项目统计
 
-### 测试策略
-- **目前状态**：无自动化测试
-- **建议**：
-  - 为关键页面添加单元测试
-  - 为自定义组件添加组件测试
-  - 使用微信小程序官方测试工具
+| 指标 | 数量 | 说明 |
+|------|------|------|
+| **业务页面** | 13个 | 核心业务功能页面 |
+| **自定义组件** | 10个 | 6个业务组件 + 4个基础组件 |
+| **工具模块** | 12个 | 9个业务工具 + 3个基础工具 |
+| **TDesign组件** | 53个 | 通过npm管理的UI组件库 |
+| **静态资源** | 10个文件 | 图标和Logo |
+| **备份页面** | 63个 | 已清理的TDesign示例页面 |
+| **代码行数估算** | ~8,000+ 行 | 业务代码为主 |
 
-### 验证方式
-- **开发阶段**：微信开发者工具预览
-- **真机测试**：扫码体验
-- **性能分析**：使用微信开发者工具的性能面板
+---
+
+## 🔄 版本历史
+
+### 重大变更（2025-12-02）
+- **转型完成**：从TDesign演示项目成功转型为业务应用
+- **页面清理**：删除63个TDesign示例页面，保留13个业务页面
+- **功能增强**：新增6个业务组件和9个业务工具模块
+- **文档更新**：CLAUDE.md全面更新以反映实际项目状态
+
+### 当前版本
+- **基础库要求**：3.6.3+
+- **Skyline 支持**：3.4.3 - 15.255.255
+- **项目类型**：摩托车维护记录管理系统
 
 ---
 
 ## 📝 开发注意事项
 
 ### 1. **开发前必读**
-- ✅ 熟悉 TDesign MiniProgram 组件库文档
-- ✅ 理解微信小程序生命周期
-- ✅ 了解 Skyline 渲染引擎特性与限制
+- ✅ 熟悉业务需求（车辆、保养、油耗管理）
+- ✅ 理解数据流（本地存储 + CSV导入导出）
+- ✅ 查看工具模块文档（utils/目录下的注释）
 - ✅ 遵循项目既有命名规范和目录结构
 
-### 2. **添加新页面**
-1. 在 `pages/` 下创建新目录（如 `new-page/`）
-2. 创建页面文件：`new-page.js`, `new-page.json`, `new-page.wxml`, `new-page.wxss`
-3. 在 `app.json` 的 `pages` 数组中添加路径 `"pages/new-page/new-page"`
-4. 如果需要分包，添加到 `subpackages` 数组
+### 2. **添加新功能**
+1. 在对应模块目录下创建文件
+2. 遵循现有的代码风格和模式
+3. 更新相关文档
+4. 添加必要的测试
 
-### 3. **使用 TDesign 组件**
-```javascript
-// 方式1：全局注册（app.json）
-"usingComponents": {
-  "t-button": "tdesign-miniprogram/button/button"
-}
+### 3. **数据管理**
+- 使用 `storage.js` 进行本地存储操作
+- 遵循现有的数据格式和结构
+- 新增数据字段时注意向后兼容
 
-// 方式2：页面注册（page.json）
-{
-  "usingComponents": {
-    "t-input": "tdesign-miniprogram/input/input"
-  }
-}
-```
-
-### 4. **Skyline 模式开发**
-- 在对应页面创建 `skyline/` 子目录
-- 复制页面文件到 `skyline/` 目录
-- 根据 Skyline 特性调整代码（参考 TDesign 文档）
-
-### 5. **样式开发**
-- 优先使用 TDesign 提供的主题变量
-- 全局样式写在 `app.wxss`
-- 页面样式写在对应 `.wxss` 文件
-- 支持深色模式，使用 `@navTxtStyle` 等主题变量
-
-### 6. **性能优化**
-- ✅ 已启用分包加载
-- ✅ 已启用懒加载（requiredComponents）
-- ✅ 已启用代码压缩
-- 🔧 建议：进一步分析包体积，优化资源加载
+### 4. **性能优化**
+- ✅ 已启用懒加载
+- ✅ 包体积已优化（删除无用页面）
+- 🔧 建议：定期分析包体积，优化资源加载
 
 ---
 
@@ -404,40 +419,26 @@ miniprogram_npm/tdesign-miniprogram/[component] (TDesign 组件)
 ### 官方文档
 - [微信小程序官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/)
 - [TDesign MiniProgram 组件库](https://tdesign.tencent.com/miniprogram/overview)
-- [Skyline 渲染引擎文档](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/introduction.html)
 
-### 相关项目
-- [TDesign MiniProgram GitHub](https://github.com/Tencent/tdesign-miniprogram)
-
----
-
-## 📈 项目统计
-
-- **总页面数**：62+
-- **自定义组件数**：4
-- **TDesign 组件数**：50+
-- **分包数量**：11
-- **目录结构层级**：3-4 层
-- **代码行数**：约 10,000+ 行（估算）
+### 项目文档
+- [清理报告](backup/清理报告.md) - 详细的页面清理记录
+- [工具模块文档](utils/) - 各工具函数的详细说明
 
 ---
 
-## 🔄 版本历史
-
-- **当前版本**：基于 TDesign MiniProgram 最新版
-- **基础库要求**：3.6.3+
-- **Skyline 支持版本**：3.4.3 - 15.255.255
+> **文档维护**：本文档由 Claude Code AI 基于项目实际代码结构分析生成。
+> **最后更新**：2025-12-02
+> **项目状态**：业务应用（摩托车维护记录管理系统）
 
 ---
 
-## 📞 联系与支持
+## ⚠️ 重要说明
 
-如需帮助或有问题，请参考：
-- TDesign 官方文档
-- 微信小程序社区
-- 项目 Issue 跟踪器（如有）
+**本项目已完成从TDesign演示项目到业务应用的转型：**
+- ✅ 删除了所有非业务相关的TDesign示例页面
+- ✅ 保留了TDesign UI组件库用于界面构建
+- ✅ 新增了完整的摩托车维护记录业务功能
+- ✅ 优化了项目结构和包体积
+- ✅ 更新了文档以反映实际项目状态
 
----
-
-> **文档维护**：本文档由 Claude Code AI 自动生成，基于项目实际代码结构分析。
-> **更新建议**：当项目结构发生重大变化时，重新运行 `/zcf:init-project` 命令更新文档。
+如需查看之前的TDesign示例页面，请参考：`backup/unused-pages/` 目录和 `backup/清理报告.md`。

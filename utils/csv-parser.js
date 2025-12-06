@@ -4,7 +4,7 @@
  * 使用 Papa Parse 库进行 CSV 解析
  */
 
-const Papa = require('papaparse/index');
+const Papa = 'papaparse/index';
 
 /**
  * 解析CSV文本
